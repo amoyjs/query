@@ -11,7 +11,7 @@ A jQuery-like pixi.js selector.
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Scene</title>
+    <title>Query</title>
     <style>
     body {
         margin: 0;
@@ -63,4 +63,23 @@ A jQuery-like pixi.js selector.
     </script>
 </body>
 </html>
+```
+
+## Contribution
+
+How to extend a method:
+
+```js
+import query from '@amoy/query'
+
+query.extend({
+    methodName() {
+        for (let i = 0; i < this.length; i++) {
+            // this[i]
+            // do something on `this[i]`
+        }
+    }
+})
+
+$('sprite').methodName()
 ```
