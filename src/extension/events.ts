@@ -6,6 +6,7 @@ export function on(name: string = '', closure: () => void = () => {}) {
             this[i].on(events[j], closure)
         }
     }
+    return this
 }
 
 export function off(name: string = '') {
@@ -15,4 +16,5 @@ export function off(name: string = '') {
             this[i].off(events[j])
         }
     }
+    return this
 }

@@ -8,6 +8,7 @@
         if (object === void 0) { object = {}; }
         Object.assign(this.prototype, object);
     }
+    //# sourceMappingURL=extend.js.map
 
     function createQuery(stage, query) {
         return function (selector) {
@@ -72,6 +73,7 @@
     function findBy(key, value, array) {
         return array.filter(function (item) { return item[key] === value; });
     }
+    //# sourceMappingURL=createQuery.js.map
 
     function on(name, closure) {
         if (name === void 0) { name = ''; }
@@ -83,6 +85,7 @@
                 this[i].on(events[j], closure);
             }
         }
+        return this;
     }
     function off(name) {
         if (name === void 0) { name = ''; }
@@ -92,9 +95,10 @@
                 this[i].off(events[j]);
             }
         }
+        return this;
     }
 
-
+    //# sourceMappingURL=index.js.map
 
     var extension = /*#__PURE__*/Object.freeze({
         on: on,
@@ -105,6 +109,7 @@
     var query = function (stage) { return window.$ = createQuery(stage, query); };
     query.extend = extend;
     query.extend(extension);
+    //# sourceMappingURL=index.js.map
 
     return query;
 
