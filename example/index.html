@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Scene</title>
+    <style>
+    body {
+        margin: 0;
+    }
+    </style>
+</head>
+<body>
+    <script src="dist/pixi.js"></script>
+    <script src="../dist/query.js"></script>
+    <script>
+    (function () {
+        const { Application, Text } = PIXI
+
+        const game = new Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        })
+        query(game.stage)
+        const helloWorld = new Text('Hello World.', {
+            fill: 0xffffff,
+        })
+        helloWorld.className = 'text'
+        helloWorld.x = 200
+        helloWorld.y = 200
+        game.stage.addChild(helloWorld)
+        console.log($('.text'))
+        $('.text').on('tap', function() {
+            console.log('tap')
+            $(this).off()
+        })
+        document.body.appendChild(game.view)
+    })()
+    </script>
+</body>
+</html>
