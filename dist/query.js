@@ -96,40 +96,9 @@
         return array.filter(function (item) { return item[key] === value; });
     }
 
-    function on(name, closure) {
-        if (name === void 0) { name = ''; }
-        if (closure === void 0) { closure = function () { }; }
-        var events = name.split(' ');
-        for (var i = 0; i < this.length; i++) {
-            for (var j = 0; j < events.length; j++) {
-                this[i].interactive = true;
-                this[i].on(events[j], closure);
-            }
-        }
-        return this;
-    }
-    function off(name) {
-        if (name === void 0) { name = ''; }
-        var events = name.split(' ');
-        for (var i = 0; i < this.length; i++) {
-            for (var j = 0; j < events.length; j++) {
-                this[i].off(events[j]);
-            }
-        }
-        return this;
-    }
-
-
-
-    var extension = /*#__PURE__*/Object.freeze({
-        on: on,
-        off: off
-    });
-
     // @ts-ignore
     var query = function (stage) { return window.$ = createQuery(stage, query); };
     query.extend = extend;
-    query.extend(extension);
 
     return query;
 

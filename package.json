@@ -1,7 +1,7 @@
 {
   "name": "@amoy/query",
   "moduleName": "query",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A jQuery-like pixi.js selector.",
   "main": "dist/query.js",
   "scripts": {

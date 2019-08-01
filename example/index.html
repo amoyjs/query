@@ -15,6 +15,7 @@
     <img src="images/rabbit.png" style="display: none">
     <script src="dist/pixi.js"></script>
     <script src="../dist/query.js"></script>
+    <script src="dist/query-event.js"></script>
     <script>
         (function () {
             const { Application, Text, Container, Sprite } = PIXI
@@ -49,14 +50,10 @@
             $('.text') // t1
             $('[name=text]') // t2
 
-            $('.text').on('tap', function () {
+            $('text').on('tap', function () {
                 console.log('tap')
-                $(this).off('tap')
+                // $(this).off('tap')
             })
-            console.log('text', $('text'))
-            console.log('container', $('container'))
-            console.log('sprite', $('sprite'))
-            
             document.body.appendChild(game.view)
         })()
     </script>
