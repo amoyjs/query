@@ -17,7 +17,6 @@
             console.error("query extension's type must be \"object\" or \"object[]\"");
         }
     }
-    //# sourceMappingURL=extend.js.map
 
     function sprite(target) {
         return typeof target._anchor !== 'undefined' && typeof target._font === 'undefined';
@@ -28,7 +27,6 @@
     function container(target) {
         return typeof target.anchor === 'undefined';
     }
-    //# sourceMappingURL=is.js.map
 
     var is = /*#__PURE__*/Object.freeze({
         sprite: sprite,
@@ -106,7 +104,6 @@
     function findBy(key, value, array) {
         return array.filter(function (item) { return item[key] === value; });
     }
-    //# sourceMappingURL=createQuery.js.map
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -562,7 +559,7 @@
         Object.defineProperty(exports, '__esModule', { value: true });
 
     }));
-    //# sourceMappingURL=query-event.js.map
+
     });
 
     var queryEvent$1 = unwrapExports(queryEvent);
@@ -573,7 +570,6 @@
     query.extend([
         queryEvent$1,
     ]);
-    //# sourceMappingURL=index.js.map
 
     return query;
 
