@@ -1,3 +1,5 @@
+import * as is from './is'
+
 export function createQuery(stage: any, query: () => void) {
     return (selector: any) => {
         const com = []
@@ -5,10 +7,13 @@ export function createQuery(stage: any, query: () => void) {
 
         switch (type) {
             case 'string':
-                const parsed = parseStringQuery(selector)
-                parsed.map((item) => {
-                    com.push(...findBy(item.key, item.value, get(stage)))
-                })
+                selector = selector.trim()
+                if (['container', 'sprite', 'text'].includes(selector)) {
+                    com.push(...getTypedItem(selector, get(stage)))
+                } else {
+                    const parsed = parseStringQuery(selector)
+                    parsed.map((item) => com.push(...findBy(item.key, item.value, get(stage))))
+                }
                 break
             case 'object':
                 com.push(...find(selector, get(stage)))
@@ -41,6 +46,10 @@ function parseStringQuery(query: string = '') {
         }
     })
     return result
+}
+
+function getTypedItem(type: string, source: any[]) {
+    return source.filter((item) => is[type](item))
 }
 
 function parsePropQuery(string: string) {

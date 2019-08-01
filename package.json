@@ -1,7 +1,7 @@
 {
   "name": "@amoy/query",
   "moduleName": "query",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A jQuery-like pixi.js selector.",
   "main": "dist/query.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "publish": "rm -rf dist && npm run dev && npm run prod"
   },
   "repository": {
-    "url": "https://e.coding.net/warmrabbit/amoy-scene.git",
+    "url": "https://github.com/amoyjs/query.git",
     "type": "git"
   },
   "author": "大板栗 <576839360@qq.com>",

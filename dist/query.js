@@ -8,7 +8,22 @@
         if (object === void 0) { object = {}; }
         Object.assign(this.prototype, object);
     }
-    //# sourceMappingURL=extend.js.map
+
+    function sprite(target) {
+        return typeof target._anchor !== 'undefined' && typeof target._font === 'undefined';
+    }
+    function text(target) {
+        return typeof target._font === 'string';
+    }
+    function container(target) {
+        return typeof target.anchor === 'undefined';
+    }
+
+    var is = /*#__PURE__*/Object.freeze({
+        sprite: sprite,
+        text: text,
+        container: container
+    });
 
     function createQuery(stage, query) {
         return function (selector) {
@@ -16,10 +31,14 @@
             var type = typeof selector;
             switch (type) {
                 case 'string':
-                    var parsed = parseStringQuery(selector);
-                    parsed.map(function (item) {
-                        com.push.apply(com, findBy(item.key, item.value, get(stage)));
-                    });
+                    selector = selector.trim();
+                    if (['container', 'sprite', 'text'].includes(selector)) {
+                        com.push.apply(com, getTypedItem(selector, get(stage)));
+                    }
+                    else {
+                        var parsed = parseStringQuery(selector);
+                        parsed.map(function (item) { return com.push.apply(com, findBy(item.key, item.value, get(stage))); });
+                    }
                     break;
                 case 'object':
                     com.push.apply(com, find(selector, get(stage)));
@@ -52,6 +71,9 @@
         });
         return result;
     }
+    function getTypedItem(type, source) {
+        return source.filter(function (item) { return is[type](item); });
+    }
     function parsePropQuery(string) {
         var _a = string.match(REG_PROP), _ = _a[0], key = _a[1], value = _a[2];
         return [key, value];
@@ -73,7 +95,6 @@
     function findBy(key, value, array) {
         return array.filter(function (item) { return item[key] === value; });
     }
-    //# sourceMappingURL=createQuery.js.map
 
     function on(name, closure) {
         if (name === void 0) { name = ''; }
@@ -98,7 +119,7 @@
         return this;
     }
 
-    //# sourceMappingURL=index.js.map
+
 
     var extension = /*#__PURE__*/Object.freeze({
         on: on,
@@ -109,7 +130,6 @@
     var query = function (stage) { return window.$ = createQuery(stage, query); };
     query.extend = extend;
     query.extend(extension);
-    //# sourceMappingURL=index.js.map
 
     return query;
 

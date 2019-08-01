@@ -23,14 +23,13 @@ A jQuery-like pixi.js selector.
     <script src="../dist/query.js"></script>
     <script>
     (function () {
-        const { Application, Text, Container } = PIXI
-
+        const { Application, Text, Container, Sprite } = PIXI
         const game = new Application({
             width: window.innerWidth,
             height: window.innerHeight,
         })
         query(game.stage)
-        
+
         const t1 = new Text('Hello World.', {
             fill: 0xffffff,
         })
@@ -48,16 +47,19 @@ A jQuery-like pixi.js selector.
         const c1 = new Container()
         c1.addChild(t2)
         game.stage.addChild(c1)
-        
+        const s1 = Sprite.from(document.querySelector('img'))
+        c1.addChild(s1)
         $('[class=text]') // t1
         // or
         $('.text') // t1
         $('[name=text]') // t2
-        
-        $('.text').on('tap', function() {
+        $('.text').on('tap', function () {
             console.log('tap')
             $(this).off('tap')
         })
+        console.log('text', $('text'))
+        console.log('container', $('container'))
+        console.log('sprite', $('sprite'))
         document.body.appendChild(game.view)
     })()
     </script>
