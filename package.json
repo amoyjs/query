@@ -1,9 +1,11 @@
 {
   "name": "@amoy/query",
   "moduleName": "query",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A jQuery-like pixi.js selector.",
   "main": "dist/query.js",
+  "module": "dist/query.es.js",
+  "types": "src/types/index.d.ts",
   "scripts": {
     "start": "NODE_ENV=development rollup -w -c rollup.config.js",
     "docs": "rm -rf ./docs/docs && jsdoc -c .jsdoc.json --verbose",
