@@ -4,6 +4,11 @@
     (global = global || self, global.query = factory());
 }(this, function () { 'use strict';
 
+    var fns = [];
+    function use(fn) {
+        fns.push(fn);
+    }
+
     function extend(target) {
         var _this = this;
         if (target === void 0) { target = []; }
@@ -37,7 +42,9 @@
     function createQuery(stage, query) {
         return function (selector) {
             var com = [];
-            var type = typeof selector;
+            // @ts-ignore
+            var any = fns.reduce(function (prev, current) { return current(prev); }, selector);
+            var type = typeof any;
             switch (type) {
                 case 'string':
                     selector = selector.trim();
@@ -566,6 +573,7 @@
 
     // @ts-ignore
     var query = function (stage) { return window.$ = createQuery(stage, query); };
+    query.use = use;
     query.extend = extend;
     query.extend([
         queryEvent$1,

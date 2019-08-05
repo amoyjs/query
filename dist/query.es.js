@@ -1,3 +1,8 @@
+var fns = [];
+function use(fn) {
+    fns.push(fn);
+}
+
 function extend(target) {
     var _this = this;
     if (target === void 0) { target = []; }
@@ -31,7 +36,9 @@ var is = /*#__PURE__*/Object.freeze({
 function createQuery(stage, query) {
     return function (selector) {
         var com = [];
-        var type = typeof selector;
+        // @ts-ignore
+        var any = fns.reduce(function (prev, current) { return current(prev); }, selector);
+        var type = typeof any;
         switch (type) {
             case 'string':
                 selector = selector.trim();
@@ -560,6 +567,7 @@ var queryEvent$1 = unwrapExports(queryEvent);
 
 // @ts-ignore
 var query = function (stage) { return window.$ = createQuery(stage, query); };
+query.use = use;
 query.extend = extend;
 query.extend([
     queryEvent$1,

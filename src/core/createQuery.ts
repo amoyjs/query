@@ -1,9 +1,12 @@
 import * as is from './is'
+import { fns } from '../globals/use'
 
 export function createQuery(stage: any, query: () => void) {
     return (selector: any) => {
         const com = []
-        const type = typeof selector
+        // @ts-ignore
+        const any = fns.reduce((prev: any, current: any) => current(prev), selector)
+        const type = typeof any
 
         switch (type) {
             case 'string':
@@ -21,6 +24,7 @@ export function createQuery(stage: any, query: () => void) {
             default:
                 break
         }
+
         return Object.assign(com, query.prototype)
     }
 }
