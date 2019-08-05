@@ -43,7 +43,7 @@
         return function (selector) {
             var com = [];
             // @ts-ignore
-            var any = fns.reduce(function (prev, current) { return current(prev); }, selector);
+            var any = fns.reduce(function (prev, current) { return current(prev, query); }, selector);
             var type = typeof any;
             switch (type) {
                 case 'string':

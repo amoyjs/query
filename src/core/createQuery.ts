@@ -1,11 +1,12 @@
 import * as is from './is'
 import { fns } from '../globals/use'
+import { IQuery } from '../types'
 
-export function createQuery(stage: any, query: () => void) {
+export function createQuery(stage: any, query: IQuery) {
     return (selector: any) => {
         const com = []
         // @ts-ignore
-        const any = fns.reduce((prev: any, current: any) => current(prev), selector)
+        const any = fns.reduce((prev: any, current: any) => current(prev, query), selector)
         const type = typeof any
 
         switch (type) {
