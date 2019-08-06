@@ -1,70 +1,53 @@
-# query
 
-A jQuery-like pixi.js selector.
+<h1 align="center">query</h1>
+<p align="center">A jQuery-like pixi.js selector.</p>
+<p align="center">
+    <a href="https://www.npmjs.com/package/@amoy/query">
+        <img src="https://img.shields.io/npm/v/@amoy/query.svg" alt="NPM Version">
+    </a>
+    <a href="https://www.npmjs.com/package/@amoy/query">
+        <img src="https://img.shields.io/npm/dt/@amoy/query.svg" alt="NPM Downloads">
+    </a>
+    <a href="javascript:;">
+        <img src="https://img.shields.io/github/size/amoyjs/query/dist/query.min.js.svg" alt="size">
+    </a>
+    <!-- <a href="https://github.com/amoyjs/query/blob/master/LICENSE">
+        <img src="https://img.shields.io/github/license/amoyjs/query.svg" alt="MIT License">
+    </a> -->
+</p>
 
 ## Usage
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Query</title>
-    <style>
-    body {
-        margin: 0;
-    }
-    </style>
-</head>
-<body>
-    <script src="dist/pixi.js"></script>
-    <script src="../dist/query.js"></script>
-    <script>
-    (function () {
-        const { Application, Text, Container, Sprite } = PIXI
-        const game = new Application({
-            width: window.innerWidth,
-            height: window.innerHeight,
-        })
-        query(game.stage)
+```js
+import { Application, Text, Container, Sprite } from 'pixi.js'
+import query from '@amoy/query'
 
-        const t1 = new Text('Hello World.', {
-            fill: 0xffffff,
-        })
-        t1.class = 'text'
-        t1.x = 200
-        t1.y = 200
-        const t2 = new Text('Hello World.', {
-            fill: 0xffffff,
-        })
-        t2.name = 'text'
-        t2.x = 300
-        t2.y = 300
-        game.stage.addChild(t1)
-        game.stage.addChild(t2)
-        const c1 = new Container()
-        c1.addChild(t2)
-        game.stage.addChild(c1)
-        const s1 = Sprite.from(document.querySelector('img'))
-        c1.addChild(s1)
-        $('[class=text]') // t1
-        // or
-        $('.text') // t1
-        $('[name=text]') // t2
-        $('.text').on('tap', function () {
-            console.log('tap')
-            $(this).off('tap')
-        })
-        console.log('text', $('text'))
-        console.log('container', $('container'))
-        console.log('sprite', $('sprite'))
-        document.body.appendChild(game.view)
-    })()
-    </script>
-</body>
-</html>
+const game = new Application({
+    width: window.innerWidth,
+    height: window.innerHeight,
+})
+
+query(game.stage)
+
+const t1 = new Text('Hello World.', {
+    fill: 0xffffff,
+})
+t1.class = 'text'
+t1.x = 200
+t1.y = 200
+const t2 = new Text('Hello World.', {
+    fill: 0xffffff,
+})
+t2.name = 'text'
+t2.x = 300
+t2.y = 300
+const s1 = Sprite.from(document.querySelector('img'))
+game.stage.addChild(t1, t2, s1)
+
+$('[class=text]') // t1
+// or
+$('.text') // t1
+$('[name=text]') // t2
 ```
 
 ## Contribution
