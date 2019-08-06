@@ -41,7 +41,7 @@ function createQuery(stage, query) {
         var type = typeof any;
         switch (type) {
             case 'string':
-                selector = selector.trim();
+                selector = any.trim();
                 if (['container', 'sprite', 'text'].includes(selector)) {
                     com.push.apply(com, getTypedItem(selector, get(stage)));
                 }

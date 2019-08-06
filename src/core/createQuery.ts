@@ -11,7 +11,7 @@ export function createQuery(stage: any, query: IQuery) {
 
         switch (type) {
             case 'string':
-                selector = selector.trim()
+                selector = any.trim()
                 if (['container', 'sprite', 'text'].includes(selector)) {
                     com.push(...getTypedItem(selector, get(stage)))
                 } else {

@@ -1,7 +1,10 @@
 import { createQuery } from '../core/createQuery'
-export default function query(stage: PIXI.Container): typeof select
-declare function select(selector: string | object): any
-export interface IQuery extends Function {
+
+export interface IQuery {
+    // @ts-ignore
+    (stage: PIXI.Container): typeof select
     use: (fn: () => void) => void
     extend: (target: any) => void
 }
+
+declare function select(selector: string | object): any
