@@ -20,7 +20,7 @@ export function createQuery(stage: any, query: IQuery) {
                 }
                 break
             case 'object':
-                com.push(...find(selector, get(stage)))
+                com.push(any)
                 break
             default:
                 break

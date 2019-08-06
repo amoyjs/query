@@ -57,7 +57,7 @@
                     }
                     break;
                 case 'object':
-                    com.push.apply(com, find(selector, get(stage)));
+                    com.push(any);
                     break;
                 default:
                     break;
@@ -104,9 +104,6 @@
         };
         walk(object);
         return result;
-    }
-    function find(item, array) {
-        return array.filter(function (_item) { return _item === item; });
     }
     function findBy(key, value, array) {
         return array.filter(function (item) { return item[key] === value; });
