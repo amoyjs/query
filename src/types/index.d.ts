@@ -8,3 +8,5 @@ export interface IQuery {
 }
 
 declare function select(selector: string | object): any
+// @ts-ignore
+export default function query(stage: PIXI.Container): typeof select
