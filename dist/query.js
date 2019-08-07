@@ -8,32 +8,94 @@
         for (var i = 0; i < this.length; i++) {
             this[i].visible = true;
         }
+        return this;
     }
     function hide() {
         for (var i = 0; i < this.length; i++) {
             this[i].visible = false;
         }
+        return this;
     }
-    function get() {
-        return this[0];
+    function get(index) {
+        if (index) {
+            return this[index];
+        }
+        else {
+            var pure = [];
+            for (var i = 0; i < this.length; i++) {
+                pure.push(this[i]);
+            }
+            return pure;
+        }
     }
     function width(width) {
-        for (var i = 0; i < this.length; i++) {
-            this[i].width = width;
+        if (typeof width === 'number') {
+            for (var i = 0; i < this.length; i++) {
+                this[i].width = width;
+            }
         }
-        return this[0].width;
+        else {
+            return this[0].width;
+        }
     }
     function height(height) {
-        for (var i = 0; i < this.length; i++) {
-            this[i].height = height;
+        if (typeof height === 'number') {
+            for (var i = 0; i < this.length; i++) {
+                this[i].height = height;
+            }
         }
-        return this[0].height;
+        else {
+            return this[0].height;
+        }
     }
     function position() {
         return {
             x: this[0] ? this[0].x : 0,
             y: this[0] ? this[0].y : 0
         };
+    }
+    function children() {
+        return this[0] ? this[0].children : [];
+    }
+    function count() {
+        return this.length;
+    }
+    function first() {
+        return this[0];
+    }
+    function last() {
+        return this[this.length - 1];
+    }
+    function each(closure) {
+        for (var i = 0; i < this.length; i++) {
+            closure(this[i], i);
+        }
+    }
+    function empty() {
+        for (var i = 0; i < this.length; i++) {
+            this[i].removeChildren();
+        }
+    }
+    function parent() {
+        return this[0] ? this[0].parent : null;
+    }
+    function text() {
+        console.log('text() not support yet');
+    }
+    function css() {
+        console.log('css() not support yet');
+    }
+    function find() {
+        console.log('find() not support yet');
+    }
+    function offset() {
+        console.log('offset() not support yet');
+    }
+    function prev() {
+        console.log('prev() not support yet');
+    }
+    function next() {
+        console.log('next() not support yet');
     }
 
     var instance = /*#__PURE__*/Object.freeze({
@@ -42,7 +104,20 @@
         get: get,
         width: width,
         height: height,
-        position: position
+        position: position,
+        children: children,
+        count: count,
+        first: first,
+        last: last,
+        each: each,
+        empty: empty,
+        parent: parent,
+        text: text,
+        css: css,
+        find: find,
+        offset: offset,
+        prev: prev,
+        next: next
     });
 
     var fns = [];
@@ -67,7 +142,7 @@
     function sprite(target) {
         return typeof target._anchor !== 'undefined' && typeof target._font === 'undefined';
     }
-    function text(target) {
+    function text$1(target) {
         return typeof target._font === 'string';
     }
     function container(target) {
@@ -76,7 +151,7 @@
 
     var is = /*#__PURE__*/Object.freeze({
         sprite: sprite,
-        text: text,
+        text: text$1,
         container: container
     });
 
