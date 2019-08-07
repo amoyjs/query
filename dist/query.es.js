@@ -1,3 +1,44 @@
+function show() {
+    for (var i = 0; i < this.length; i++) {
+        this[i].visible = true;
+    }
+}
+function hide() {
+    for (var i = 0; i < this.length; i++) {
+        this[i].visible = false;
+    }
+}
+function get() {
+    return this[0];
+}
+function width(width) {
+    for (var i = 0; i < this.length; i++) {
+        this[i].width = width;
+    }
+    return this[0].width;
+}
+function height(height) {
+    for (var i = 0; i < this.length; i++) {
+        this[i].height = height;
+    }
+    return this[0].height;
+}
+function position() {
+    return {
+        x: this[0] ? this[0].x : 0,
+        y: this[0] ? this[0].y : 0
+    };
+}
+
+var instance = /*#__PURE__*/Object.freeze({
+    show: show,
+    hide: hide,
+    get: get,
+    width: width,
+    height: height,
+    position: position
+});
+
 var fns = [];
 function use(fn) {
     fns.push(fn);
@@ -43,11 +84,11 @@ function createQuery(stage, query) {
             case 'string':
                 selector = any.trim();
                 if (['container', 'sprite', 'text'].includes(selector)) {
-                    com.push.apply(com, getTypedItem(selector, get(stage)));
+                    com.push.apply(com, getTypedItem(selector, get$1(stage)));
                 }
                 else {
                     var parsed = parseStringQuery(selector);
-                    parsed.map(function (item) { return com.push.apply(com, findBy(item.key, item.value, get(stage))); });
+                    parsed.map(function (item) { return com.push.apply(com, findBy(item.key, item.value, get$1(stage))); });
                 }
                 break;
             case 'object':
@@ -88,7 +129,7 @@ function parsePropQuery(string) {
     var _a = string.match(REG_PROP), _ = _a[0], key = _a[1], value = _a[2];
     return [key, value];
 }
-function get(object) {
+function get$1(object) {
     var result = [];
     var walk = function (object) {
         if (object.children.length > 0) {
@@ -568,6 +609,7 @@ query.use = use;
 query.extend = extend;
 query.extend([
     queryEvent$1,
+    instance,
 ]);
 
 export default query;

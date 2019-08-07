@@ -1,3 +1,4 @@
+import * as instance from '../instance'
 import { use, extend } from '../globals'
 import { createQuery } from './createQuery'
 import queryEvent from '@amoy/query-event'
@@ -11,4 +12,5 @@ query.extend = extend
 
 query.extend([
     queryEvent,
+    instance,
 ])
