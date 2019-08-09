@@ -75,6 +75,7 @@ function parent() {
 }
 function text() {
     console.log('text() not support yet');
+    return this[0] && this[0]._text && this[0]._text;
 }
 function css() {
     console.log('css() not support yet');
@@ -181,11 +182,17 @@ function parseStringQuery(query) {
     var result = [];
     query.split(',').map(function (query) {
         query = query.trim();
-        if (query.startsWith('.')) {
-            result.push({
-                key: 'name',
-                value: query.slice(1)
-            });
+        var selectTypes = {
+            '#': 'id',
+            '.': 'className'
+        };
+        for (var key in selectTypes) {
+            if (query.startsWith(key)) {
+                result.push({
+                    key: selectTypes[key],
+                    value: query.slice(1)
+                });
+            }
         }
         if (REG_PROP.test(query)) {
             var _a = parsePropQuery(query), key = _a[0], value = _a[1];

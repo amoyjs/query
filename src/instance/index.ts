@@ -85,6 +85,7 @@ export function parent() {
 
 export function text() {
     console.log('text() not support yet')
+    return this[0] && this[0]._text && this[0]._text
 }
 
 export function css() {

@@ -36,11 +36,17 @@ function parseStringQuery(query: string = '') {
     const result = []
     query.split(',').map((query: string) => {
         query = query.trim()
-        if (query.startsWith('.')) {
-            result.push({
-                key: 'name',
-                value: query.slice(1),
-            })
+        const selectTypes = {
+            '#': 'id',
+            '.': 'className',
+        }
+        for (const key in selectTypes) {
+            if (query.startsWith(key)) {
+                result.push({
+                    key: selectTypes[key],
+                    value: query.slice(1),
+                })
+            }
         }
         if (REG_PROP.test(query)) {
             const [key, value] = parsePropQuery(query)
