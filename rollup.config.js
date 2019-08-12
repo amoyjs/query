@@ -12,6 +12,9 @@ const output = options => ({
     name: moduleName,
     sourcemap: true,
     ...options,
+    globals: {
+        '@amoy/query-event': 'queryEvent',
+    },
 })
 
 const configure = {
@@ -31,7 +34,7 @@ const configure = {
         commonjs(),
         resolve(),
     ],
-    external: [],
+    external: ['@amoy/query-event'],
 }
 
 if (isProd) {

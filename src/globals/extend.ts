@@ -1,3 +1,27 @@
+/**
+ * extend
+ * 
+ * query extend method
+ * 
+ * @module query/extend
+ * 
+ * @param { Object | Array } target - extend target
+ * 
+ * @example
+ * 
+ * import query from '@amoy/query'
+ * 
+ * query.extend({
+ *     hide() {
+ *         for (let i = 0; i < this.length; i++) {
+ *             // hide all the selected items
+ *             this[i].visible = false
+ *         }
+ *     },
+ * })
+ * 
+ * $('some query').hide()
+ */
 export function extend(target: any = []) {
     if (Array.isArray(target)) {
         target.map((item) => extend.bind(this)(item))

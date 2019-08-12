@@ -2,17 +2,10 @@
 # yarn lockfile v1
 
 
-"@amoy/common@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@amoy/common/-/common-1.0.1.tgz#23d0fe9614af7e92c043eed0c91b767b4c3c2a18"
-  integrity sha512-bSFetibHoziLmeE9tIvJp6agVyAPkKm2BG0EozBZh6h6nqTjL57dJLDPPV/gm3R+HQZBOasLbopEPE3FfRv6aQ==
-
-"@amoy/query-event@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@amoy/query-event/-/query-event-0.1.0.tgz#0619a8e582291084c2b48f42670ffd0feeab6a8a"
-  integrity sha512-W9Ha19UKdqhIXnm1fY1BZXxfl56HH2gVS42b/Jhw626Ll+rxtsP+c5Xsm/FRN1SS/c/gxKIiYAR2Cx13JBiXYQ==
-  dependencies:
-    "@amoy/common" "^1.0.1"
+"@amoy/query-event@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@amoy/query-event/-/query-event-0.1.1.tgz#904eee4d1a90d92f145cfcf01b636832d15f4701"
+  integrity sha512-2KzhbL94gzvSd4U9ixcwe1GSBkSlZneqx9mdWybwrUdfJtEJwZKKD0Ka5q0jDLYbGjIc5cy8VIe0XsrLUebggQ==
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
