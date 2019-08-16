@@ -1,7 +1,7 @@
 {
   "name": "@amoy/query",
   "moduleName": "query",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "A jQuery-like pixi.js selector.",
   "main": "dist/query.js",
   "module": "dist/query.es.js",
@@ -26,6 +26,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "better-docs": "^1.1.6",
     "jsdoc-babel": "^0.5.0",
+    "rollup": "^1.19.4",
     "rollup-plugin-alias": "^1.5.2",
     "rollup-plugin-babel-minify": "^9.0.0",
     "rollup-plugin-commonjs": "^10.0.1",
@@ -35,6 +36,6 @@
     "typescript": "^3.5.2"
   },
   "dependencies": {
-    "@amoy/query-event": "^0.1.1"
+    "@amoy/query-event": "^0.1.2"
   }
 }
