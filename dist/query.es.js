@@ -125,7 +125,7 @@ function height(height) {
 function position() {
     return {
         x: this[0] ? this[0].x : 0,
-        y: this[0] ? this[0].y : 0
+        y: this[0] ? this[0].y : 0,
     };
 }
 /**
@@ -371,13 +371,13 @@ function parseStringQuery(query) {
         query = query.trim();
         var selectTypes = {
             '#': 'id',
-            '.': 'className'
+            '.': 'className',
         };
         for (var key in selectTypes) {
             if (query.startsWith(key)) {
                 result.push({
                     key: selectTypes[key],
-                    value: query.slice(1)
+                    value: query.slice(1),
                 });
             }
         }
@@ -385,7 +385,7 @@ function parseStringQuery(query) {
             var _a = parsePropQuery(query), key = _a[0], value = _a[1];
             result.push({
                 key: key,
-                value: value
+                value: value,
             });
         }
     });
@@ -413,29 +413,6 @@ function findBy(key, value, array) {
     return array.filter(function (item) { return item[key] === value; });
 }
 
-/**
- * query
- *
- * @module query/query
- *
- * @param { Object } stage - PIXI stage
- *
- * @example
- *
- * import { Application as Game } from 'pixi.js'
- *
- * const game = new Game({
- *     width: window.innerWidth,
- *     height: window.innerHeight,
- * })
- *
- * query(game.stage)
- * //then you can use as
- * $('sprite').hide()
- * // or
- * $('text').on('tap', () => {})
- */
-// @ts-ignore
 var query = function (stage) { return window.$ = createQuery(stage, query); };
 query.use = use;
 query.extend = extend;
@@ -444,5 +421,5 @@ query.extend([
     instance,
 ]);
 
-export default query;
+export { query };
 //# sourceMappingURL=query.es.js.map

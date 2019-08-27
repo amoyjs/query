@@ -1,0 +1,44 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "build/dist",
+        "module": "esnext",
+        "target": "es5",
+        "lib": ["es6", "dom"],
+        "sourceMap": true,
+        "allowJs": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "rootDir": "./",
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        // "noImplicitAny": true,
+        "importHelpers": true,
+        "strictNullChecks": true,
+        "suppressImplicitAnyIndexErrors": true,
+        // "noUnusedLocals": true, // 为了编译成功，临时关闭
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "paths": {
+        "@Client/*": ["./src/client/*"],
+        "@Components-UI/*": ["./src/client/app/components-UI/*"],
+        "@Components-BU/*": ["./src/client/app/components-BU/*"],
+        "@Tools/*": ["./src/client/app/tools/*"],
+        "@Assets/*": ["./src/client/app/assets/*"],
+        "@Src/*": ["./src/client/*"],
+        "@Config/*": ["./src/client/config/*"],
+        "@Api/*": ["./src/client/app/api/*"],
+        "@Store/*":["./src/client/app/store/*"],
+        "@Hooks/*":["./src/client/app/hooks/*"],
+        "@Typings/*":["./src/typings/*"],
+        "Server#/*":["./src/server/*"],
+        "Build#/*":["./build/*"],
+        }
+    },
+    "exclude": [
+        
+    ],
+}

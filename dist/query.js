@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@amoy/query-event')) :
-    typeof define === 'function' && define.amd ? define(['@amoy/query-event'], factory) :
-    (global = global || self, global.query = factory(global.queryEvent));
-}(this, function (queryEvent) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@amoy/query-event')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@amoy/query-event'], factory) :
+    (global = global || self, factory(global.query = {}, global.queryEvent));
+}(this, function (exports, queryEvent) { 'use strict';
 
     queryEvent = queryEvent && queryEvent.hasOwnProperty('default') ? queryEvent['default'] : queryEvent;
 
@@ -131,7 +131,7 @@
     function position() {
         return {
             x: this[0] ? this[0].x : 0,
-            y: this[0] ? this[0].y : 0
+            y: this[0] ? this[0].y : 0,
         };
     }
     /**
@@ -377,13 +377,13 @@
             query = query.trim();
             var selectTypes = {
                 '#': 'id',
-                '.': 'className'
+                '.': 'className',
             };
             for (var key in selectTypes) {
                 if (query.startsWith(key)) {
                     result.push({
                         key: selectTypes[key],
-                        value: query.slice(1)
+                        value: query.slice(1),
                     });
                 }
             }
@@ -391,7 +391,7 @@
                 var _a = parsePropQuery(query), key = _a[0], value = _a[1];
                 result.push({
                     key: key,
-                    value: value
+                    value: value,
                 });
             }
         });
@@ -419,29 +419,6 @@
         return array.filter(function (item) { return item[key] === value; });
     }
 
-    /**
-     * query
-     *
-     * @module query/query
-     *
-     * @param { Object } stage - PIXI stage
-     *
-     * @example
-     *
-     * import { Application as Game } from 'pixi.js'
-     *
-     * const game = new Game({
-     *     width: window.innerWidth,
-     *     height: window.innerHeight,
-     * })
-     *
-     * query(game.stage)
-     * //then you can use as
-     * $('sprite').hide()
-     * // or
-     * $('text').on('tap', () => {})
-     */
-    // @ts-ignore
     var query = function (stage) { return window.$ = createQuery(stage, query); };
     query.use = use;
     query.extend = extend;
@@ -450,7 +427,9 @@
         instance,
     ]);
 
-    return query;
+    exports.query = query;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=query.js.map

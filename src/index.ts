@@ -1,1 +1,0 @@
-export { query as default } from './core'

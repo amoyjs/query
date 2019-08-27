@@ -9,7 +9,7 @@
  *
  * $('text').show()
  */
-export function show() {
+export function show(this: any) {
     for (let i = 0; i < this.length; i++) {
         this[i].visible = true
     }
@@ -27,7 +27,7 @@ export function show() {
  *
  * $('text').hide()
  */
-export function hide() {
+export function hide(this: any) {
     for (let i = 0; i < this.length; i++) {
         this[i].visible = false
     }
@@ -49,11 +49,11 @@ export function hide() {
  * // or
  * $('text').get(0)
  */
-export function get(index: number) {
+export function get(this: any, index: number) {
     if (index) {
         return this[index]
     } else {
-        const pure = []
+        const pure: any[] = []
         for (let i = 0; i < this.length; i++) {
             pure.push(this[i])
         }
@@ -76,7 +76,7 @@ export function get(index: number) {
  *
  * $('text').width()
  */
-export function width(width: number) {
+export function width(this: any, width: number) {
     if (typeof width === 'number') {
         for (let i = 0; i < this.length; i++) {
             this[i].width = width
@@ -101,7 +101,7 @@ export function width(width: number) {
  *
  * $('text').height()
  */
-export function height(height: number) {
+export function height(this: any, height: number) {
     if (typeof height === 'number') {
         for (let i = 0; i < this.length; i++) {
             this[i].height = height
@@ -122,7 +122,7 @@ export function height(height: number) {
  *
  * $('text').position()
  */
-export function position() {
+export function position(this: any) {
     return {
         x: this[0] ? this[0].x : 0,
         y: this[0] ? this[0].y : 0,
@@ -140,7 +140,7 @@ export function position() {
  *
  * $('text').children()
  */
-export function children() {
+export function children(this: any) {
     return this[0] ? this[0].children : []
 }
 
@@ -155,7 +155,7 @@ export function children() {
  *
  * $('text').count()
  */
-export function count() {
+export function count(this: any) {
     return this.length
 }
 
@@ -174,7 +174,7 @@ export function count() {
  *
  * $('text').first()
  */
-export function first() {
+export function first(this: any) {
     return this[0]
 }
 
@@ -189,7 +189,7 @@ export function first() {
  *
  * $('text').last()
  */
-export function last() {
+export function last(this: any) {
     return this[this.length - 1]
 }
 
@@ -206,7 +206,7 @@ export function last() {
  *     $(item).hide()
  * })
  */
-export function each(closure: (item: any, index: number) => void) {
+export function each(this: any, closure: (item: any, index: number) => void) {
     for (let i = 0; i < this.length; i++) {
         closure(this[i], i)
     }
@@ -223,7 +223,7 @@ export function each(closure: (item: any, index: number) => void) {
  *
  * $('text').empty()
  */
-export function empty() {
+export function empty(this: any) {
     for (let i = 0; i < this.length; i++) {
         this[i].removeChildren()
     }
@@ -240,11 +240,11 @@ export function empty() {
  * 
  * $('text').parent()
  */
-export function parent() {
+export function parent(this: any) {
     return this[0] ? this[0].parent : null
 }
 
-export function text() {
+export function text(this: any) {
     console.log('text() not support yet')
     return this[0] && this[0]._text && this[0]._text
 }
@@ -268,4 +268,3 @@ export function prev() {
 export function next() {
     console.log('next() not support yet')
 }
-

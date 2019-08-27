@@ -1,10 +1,9 @@
 import * as is from './is'
 import { fns } from '../globals/use'
-import { IQuery } from '../types'
 
-export function createQuery(stage: any, query: IQuery) {
+export function createQuery(stage: any, query: typeof $) {
     return (selector: any) => {
-        const com = []
+        const com: any[] = []
         // @ts-ignore
         const any = fns.reduce((prev: any, current: any) => current(prev, query), selector)
         const type = typeof any
@@ -16,7 +15,7 @@ export function createQuery(stage: any, query: IQuery) {
                     com.push(...getTypedItem(selector, get(stage)))
                 } else {
                     const parsed = parseStringQuery(selector)
-                    parsed.map((item) => com.push(...findBy(item.key, item.value, get(stage))))
+                    parsed.map((item: any) => com.push(...findBy(item.key, item.value, get(stage))))
                 }
                 break
             case 'object':
@@ -33,7 +32,7 @@ export function createQuery(stage: any, query: IQuery) {
 const REG_PROP = /\[(.*)\=(.*)\]/ // 匹配 `[${key}=${value}]` 形式字符串
 
 function parseStringQuery(query: string = '') {
-    const result = []
+    const result: any[] = []
     query.split(',').map((query: string) => {
         query = query.trim()
         const selectTypes = {
@@ -64,12 +63,12 @@ function getTypedItem(type: string, source: any[]) {
 }
 
 function parsePropQuery(string: string) {
-    const [_, key, value] = string.match(REG_PROP)
+    const [_, key, value] = string.match(REG_PROP) as any
     return [key, value]
 }
 
 function get(object: any) {
-    const result = []
+    const result: any[] = []
     const walk = (object: any) => {
         if (object.children.length > 0) {
             result.push(...object.children)

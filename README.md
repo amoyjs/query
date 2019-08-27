@@ -1,70 +1,34 @@
+# rollup-typescript-startkit
 
-<h1 align="center">query</h1>
-<p align="center">A jQuery-like pixi.js selector.</p>
-<p align="center">
-    <a href="https://www.npmjs.com/package/@amoy/query">
-        <img src="https://img.shields.io/npm/v/@amoy/query.svg" alt="NPM Version">
-    </a>
-    <a href="https://www.npmjs.com/package/@amoy/query">
-        <img src="https://img.shields.io/npm/dt/@amoy/query.svg" alt="NPM Downloads">
-    </a>
-    <a href="javascript:;">
-        <img src="https://img.shields.io/github/size/amoyjs/query/dist/query.min.js.svg" alt="size">
-    </a>
-    <!-- <a href="https://github.com/amoyjs/query/blob/master/LICENSE">
-        <img src="https://img.shields.io/github/license/amoyjs/query.svg" alt="MIT License">
-    </a> -->
-</p>
+## 简介:
 
-## Usage
+一款基于 rollup 与 typescript 的轻量级脚手架，专注于 JavaScript 库的开发，能够满足开发库时所需要的各项功能；
+
+包含功能:
+
+- rollup | tree-shaking
+- typescript
+- hot-reload
+- example / debug
+- sass
+
+## 安装
+
+此处使用一个简单易用的项目初始化工具: just-cli
 
 ```js
-import { Application, Text, Container, Sprite } from 'pixi.js'
-import query from '@amoy/query'
+// 命令行:
+sudo npm i just-cli -g
 
-const game = new Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
-})
+// 添加配置
+just add -n rollup-startkit -g https://github.com/xd-tayde/rollup-typescript-startkit.git
 
-query(game.stage)
-
-const t1 = new Text('Hello World.', {
-    fill: 0xffffff,
-})
-t1.class = 'text'
-t1.x = 200
-t1.y = 200
-const t2 = new Text('Hello World.', {
-    fill: 0xffffff,
-})
-t2.name = 'text'
-t2.x = 300
-t2.y = 300
-const s1 = Sprite.from(document.querySelector('img'))
-game.stage.addChild(t1, t2, s1)
-
-$('[class=text]') // t1
-// or
-$('.text') // t1
-$('[name=text]') // t2
+// 之后就可以通过 init 快速创建项目
+just init rollup-startkit myProject
 ```
 
-## Contribution
+## 开发姿势:
 
-How to extend a method:
-
-```js
-import query from '@amoy/query'
-
-query.extend({
-    methodName() {
-        for (let i = 0; i < this.length; i++) {
-            // this[i]
-            // do something on `this[i]`
-        }
-    }
-})
-
-$('sprite').methodName()
-```
+- `package.json` 中修改对应的包名称
+- `npm run dev`: 开发环境
+- `npm run publish`: 打包编译

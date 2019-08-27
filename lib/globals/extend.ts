@@ -22,7 +22,7 @@
  * 
  * $('some query').hide()
  */
-export function extend(target: any = []) {
+export function extend(this: any, target: any = []) {
     if (Array.isArray(target)) {
         target.map((item) => extend.bind(this)(item))
     } else if (typeof target === 'object') {
