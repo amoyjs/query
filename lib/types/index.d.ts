@@ -1,4 +1,9 @@
-declare function $(selector: string | object): {
+interface Window {
+    $: any
+}
+
+interface $$ {
+    animate: any
     children: any
     count: any
     css: any
@@ -21,12 +26,13 @@ declare function $(selector: string | object): {
     text: any
     width: any
 }
-
-
-interface Window {
-    $: typeof $
-}
+declare function $(selector: string | object): $$
 
 declare module '@amoy/query' {
-    function query(stage: PIXI.Container): typeof $
+    interface query {
+        (stage: PIXI.Container): $$
+        extend: any
+        use: any
+    }
+    const query: query
 }
