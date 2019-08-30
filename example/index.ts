@@ -13,10 +13,25 @@ document.body.appendChild(game.view)
 
 query(game.stage)
 
+const container = new PIXI.Container()
+
 const t1 = new PIXI.Text('Hello World.', {
     fill: 0x000000,
 })
 t1['class'] = 'text'
 t1.x = 200
 t1.y = 200
-game.stage.addChild(t1)
+
+const t2 = new PIXI.Text('Hello World2222.', {
+    fill: 0x000000,
+})
+t2['class'] = 'text'
+t2['className'] = 'aaaa'
+t2.x = 300
+t2.y = 300
+
+container.addChild(t1)
+container.addChild(t2)
+game.stage.addChild(container)
+
+console.log($('.aaaa'))

@@ -123,9 +123,13 @@ export function height(this: any, height: number) {
  * $('text').position()
  */
 export function position(this: any) {
-    return {
-        x: this[0] ? this[0].x : 0,
-        y: this[0] ? this[0].y : 0,
+    if (this[0]) {
+        return {
+            x: this[0].x,
+            y: this[0].y,
+        }
+    } else {
+        return null
     }
 }
 
@@ -244,27 +248,49 @@ export function parent(this: any) {
     return this[0] ? this[0].parent : null
 }
 
-export function text(this: any) {
-    console.log('text() not support yet')
-    return this[0] && this[0]._text && this[0]._text
+export function attr(this: any, key: string, value?: any) {
+    if (this[0] ) {  
+        if (value) {
+            this[0][key] = value
+            return this[0]
+        } else {
+            return this[0][key]
+        }
+    }
 }
 
-export function css() {
-    console.log('css() not support yet')
+export function text(this: any) {
+    if (this[0]) {
+        if (this[0].text) {
+            return this[0].text
+        } else if (this[0].children && this[0].children[0].text) {
+            return this[0].children[0].text
+        }
+    } else {
+        return null
+    }
 }
 
 export function find() {
     console.log('find() not support yet')
 }
 
-export function offset() {
-    console.log('offset() not support yet')
+export function prev(this: any) {
+    if (this[0] && this[0].parent && this[0].parent.children.length) {
+        return this[0].parent.children.filter((v, i) => {
+            if (v === this[0]) {
+                return this[0].parent.children[i - 1]
+            }
+        })[0]
+    }
 }
 
-export function prev() {
-    console.log('prev() not support yet')
-}
-
-export function next() {
-    console.log('next() not support yet')
+export function next(this: any) {
+    if (this[0] && this[0].parent && this[0].parent.children.length) {
+        return this[0].parent.children.filter((v, i) => {
+            if (v === this[0]) {
+                return this[0].parent.children[i + 1]
+            }
+        })[0]
+    }
 }

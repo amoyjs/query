@@ -123,10 +123,15 @@ function height(height) {
  * $('text').position()
  */
 function position() {
-    return {
-        x: this[0] ? this[0].x : 0,
-        y: this[0] ? this[0].y : 0,
-    };
+    if (this[0]) {
+        return {
+            x: this[0].x,
+            y: this[0].y,
+        };
+    }
+    else {
+        return null;
+    }
 }
 /**
  * children
@@ -236,24 +241,52 @@ function empty() {
 function parent() {
     return this[0] ? this[0].parent : null;
 }
-function text() {
-    console.log('text() not support yet');
-    return this[0] && this[0]._text && this[0]._text;
+function attr(key, value) {
+    if (this[0]) {
+        if (value) {
+            this[0][key] = value;
+            return this[0];
+        }
+        else {
+            return this[0][key];
+        }
+    }
 }
-function css() {
-    console.log('css() not support yet');
+function text() {
+    if (this[0]) {
+        if (this[0].text) {
+            return this[0].text;
+        }
+        else if (this[0].children && this[0].children[0].text) {
+            return this[0].children[0].text;
+        }
+    }
+    else {
+        return null;
+    }
 }
 function find() {
     console.log('find() not support yet');
 }
-function offset() {
-    console.log('offset() not support yet');
-}
 function prev() {
-    console.log('prev() not support yet');
+    var _this = this;
+    if (this[0] && this[0].parent && this[0].parent.children.length) {
+        return this[0].parent.children.filter(function (v, i) {
+            if (v === _this[0]) {
+                return _this[0].parent.children[i - 1];
+            }
+        })[0];
+    }
 }
 function next() {
-    console.log('next() not support yet');
+    var _this = this;
+    if (this[0] && this[0].parent && this[0].parent.children.length) {
+        return this[0].parent.children.filter(function (v, i) {
+            if (v === _this[0]) {
+                return _this[0].parent.children[i + 1];
+            }
+        })[0];
+    }
 }
 
 var instance = /*#__PURE__*/Object.freeze({
@@ -270,10 +303,9 @@ var instance = /*#__PURE__*/Object.freeze({
     each: each,
     empty: empty,
     parent: parent,
+    attr: attr,
     text: text,
-    css: css,
     find: find,
-    offset: offset,
     prev: prev,
     next: next
 });
@@ -370,14 +402,16 @@ function parseStringQuery(query) {
     query.split(',').map(function (query) {
         query = query.trim();
         var selectTypes = {
-            '#': 'id',
-            '.': 'className',
+            '#': ['id'],
+            '.': ['className', 'class', 'classname'],
         };
         for (var key in selectTypes) {
             if (query.startsWith(key)) {
-                result.push({
-                    key: selectTypes[key],
-                    value: query.slice(1),
+                selectTypes[key].map(function (attrName) {
+                    result.push({
+                        key: attrName,
+                        value: query.slice(1),
+                    });
                 });
             }
         }

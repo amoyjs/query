@@ -3,6 +3,7 @@ interface Window {
 }
 
 interface $$ {
+    attr: (key: string, value?: any) => any
     animate: any
     children: any
     count: any

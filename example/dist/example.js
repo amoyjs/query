@@ -40418,10 +40418,15 @@
              * $('text').position()
              */
             function position() {
-                return {
-                    x: this[0] ? this[0].x : 0,
-                    y: this[0] ? this[0].y : 0,
-                };
+                if (this[0]) {
+                    return {
+                        x: this[0].x,
+                        y: this[0].y,
+                    };
+                }
+                else {
+                    return null;
+                }
             }
             /**
              * children
@@ -40531,25 +40536,54 @@
             function parent() {
                 return this[0] ? this[0].parent : null;
             }
-            function text() {
-                console.log('text() not support yet');
-                return this[0] && this[0]._text && this[0]._text;
+            function attr(key, value) {
+                if (this[0]) {
+                    if (value) {
+                        this[0][key] = value;
+                        return this[0];
+                    }
+                    else {
+                        return this[0][key];
+                    }
+                }
             }
-            function css() {
-                console.log('css() not support yet');
+            function text() {
+                if (this[0]) {
+                    if (this[0].text) {
+                        return this[0].text;
+                    }
+                    else if (this[0].children && this[0].children[0].text) {
+                        return this[0].children[0].text;
+                    }
+                }
+                else {
+                    return null;
+                }
             }
             function find() {
                 console.log('find() not support yet');
             }
-            function offset() {
-                console.log('offset() not support yet');
-            }
             function prev() {
-                console.log('prev() not support yet');
+                var _this = this;
+                if (this[0] && this[0].parent && this[0].parent.children.length) {
+                    return this[0].parent.children.filter(function (v, i) {
+                        if (v === _this[0]) {
+                            return _this[0].parent.children[i - 1];
+                        }
+                    })[0];
+                }
             }
             function next() {
-                console.log('next() not support yet');
+                var _this = this;
+                if (this[0] && this[0].parent && this[0].parent.children.length) {
+                    return this[0].parent.children.filter(function (v, i) {
+                        if (v === _this[0]) {
+                            return _this[0].parent.children[i + 1];
+                        }
+                    })[0];
+                }
             }
+            //# sourceMappingURL=index.js.map
 
             var instance = /*#__PURE__*/Object.freeze({
                         show: show,
@@ -40565,10 +40599,9 @@
                         each: each,
                         empty: empty,
                         parent: parent,
+                        attr: attr,
                         text: text,
-                        css: css,
                         find: find,
-                        offset: offset,
                         prev: prev,
                         next: next
             });
@@ -40668,14 +40701,16 @@
                 query.split(',').map(function (query) {
                     query = query.trim();
                     var selectTypes = {
-                        '#': 'id',
-                        '.': 'className',
+                        '#': ['id'],
+                        '.': ['className', 'class', 'classname'],
                     };
                     for (var key in selectTypes) {
                         if (query.startsWith(key)) {
-                            result.push({
-                                key: selectTypes[key],
-                                value: query.slice(1),
+                            selectTypes[key].map(function (attrName) {
+                                result.push({
+                                    key: attrName,
+                                    value: query.slice(1),
+                                });
                             });
                         }
                     }
@@ -41200,14 +41235,24 @@
             });
             document.body.appendChild(game.view);
             query(game.stage);
+            var container$1 = new Container();
             var t1 = new Text('Hello World.', {
                 fill: 0x000000,
             });
             t1['class'] = 'text';
             t1.x = 200;
             t1.y = 200;
-            game.stage.addChild(t1);
-            //# sourceMappingURL=index.js.map
+            var t2 = new Text('Hello World2222.', {
+                fill: 0x000000,
+            });
+            t2['class'] = 'text';
+            t2['className'] = 'aaaa';
+            t2.x = 300;
+            t2.y = 300;
+            container$1.addChild(t1);
+            container$1.addChild(t2);
+            game.stage.addChild(container$1);
+            console.log($('.aaaa'));
 
 }));
 //# sourceMappingURL=example.js.map

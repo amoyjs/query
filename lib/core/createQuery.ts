@@ -36,14 +36,16 @@ function parseStringQuery(query: string = '') {
     query.split(',').map((query: string) => {
         query = query.trim()
         const selectTypes = {
-            '#': 'id',
-            '.': 'className',
+            '#': ['id'],
+            '.': ['className', 'class', 'classname'],
         }
         for (const key in selectTypes) {
             if (query.startsWith(key)) {
-                result.push({
-                    key: selectTypes[key],
-                    value: query.slice(1),
+                selectTypes[key].map((attrName) => {
+                    result.push({
+                        key: attrName,
+                        value: query.slice(1),
+                    })
                 })
             }
         }
