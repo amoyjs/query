@@ -257,19 +257,7 @@ export function attr(this: any, key: string, value?: any) {
             return this[0][key]
         }
     }
-}
-
-export function text(this: any) {
-    if (this[0]) {
-        if (this[0].text) {
-            return this[0].text
-        } else if (this[0].children && this[0].children[0].text) {
-            return this[0].children[0].text
-        }
-    } else {
-        return null
-    }
-}
+} 
 
 export function find() {
     console.log('find() not support yet')

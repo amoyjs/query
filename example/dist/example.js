@@ -40547,19 +40547,6 @@
                     }
                 }
             }
-            function text() {
-                if (this[0]) {
-                    if (this[0].text) {
-                        return this[0].text;
-                    }
-                    else if (this[0].children && this[0].children[0].text) {
-                        return this[0].children[0].text;
-                    }
-                }
-                else {
-                    return null;
-                }
-            }
             function find() {
                 console.log('find() not support yet');
             }
@@ -40600,7 +40587,6 @@
                         empty: empty,
                         parent: parent,
                         attr: attr,
-                        text: text,
                         find: find,
                         prev: prev,
                         next: next
@@ -40654,7 +40640,7 @@
             function sprite(target) {
                 return typeof target._anchor !== 'undefined' && typeof target._font === 'undefined';
             }
-            function text$1(target) {
+            function text(target) {
                 return typeof target._font === 'string';
             }
             function container(target) {
@@ -40664,20 +40650,19 @@
 
             var is = /*#__PURE__*/Object.freeze({
                         sprite: sprite,
-                        text: text$1,
+                        text: text,
                         container: container
             });
 
             function createQuery(stage, query) {
                 return function (selector) {
                     var com = [];
-                    // @ts-ignore
                     var any = fns.reduce(function (prev, current) { return current(prev, query); }, selector);
                     var type = typeof any;
                     switch (type) {
                         case 'string':
                             selector = any.trim();
-                            if (['container', 'sprite', 'text'].includes(selector)) {
+                            if (['view', 'sprite', 'text'].includes(selector)) {
                                 com.push.apply(com, getTypedItem(selector, get$1(stage)));
                             }
                             else {
@@ -40743,7 +40728,7 @@
                 return result;
             }
             function findBy(key, value, array) {
-                return array.filter(function (item) { return item[key] === value; });
+                return array.filter(function (item) { return typeof item[key] === 'string' ? item[key].includes(value) : item[key] === value; });
             }
             //# sourceMappingURL=createQuery.js.map
 
@@ -41236,20 +41221,19 @@
             document.body.appendChild(game.view);
             query(game.stage);
             var container$1 = new Container();
-            var t1 = new Text('Hello World.', {
-                fill: 0x000000,
-            });
-            t1['class'] = 'text';
-            t1.x = 200;
-            t1.y = 200;
+            // const t1 = new PIXI.Text('Hello World.', {
+            //     fill: 0x000000,
+            // })
+            // t1['class'] = 'text'
+            // t1.x = 200
+            // t1.y = 200
             var t2 = new Text('Hello World2222.', {
                 fill: 0x000000,
             });
-            t2['class'] = 'text';
-            t2['className'] = 'aaaa';
+            t2['class'] = 'aaaa';
             t2.x = 300;
             t2.y = 300;
-            container$1.addChild(t1);
+            // container.addChild(t1)
             container$1.addChild(t2);
             game.stage.addChild(container$1);
             console.log($('.aaaa'));

@@ -252,19 +252,6 @@ function attr(key, value) {
         }
     }
 }
-function text() {
-    if (this[0]) {
-        if (this[0].text) {
-            return this[0].text;
-        }
-        else if (this[0].children && this[0].children[0].text) {
-            return this[0].children[0].text;
-        }
-    }
-    else {
-        return null;
-    }
-}
 function find() {
     console.log('find() not support yet');
 }
@@ -304,7 +291,6 @@ var instance = /*#__PURE__*/Object.freeze({
     empty: empty,
     parent: parent,
     attr: attr,
-    text: text,
     find: find,
     prev: prev,
     next: next
@@ -356,7 +342,7 @@ function extend(target) {
 function sprite(target) {
     return typeof target._anchor !== 'undefined' && typeof target._font === 'undefined';
 }
-function text$1(target) {
+function text(target) {
     return typeof target._font === 'string';
 }
 function container(target) {
@@ -365,20 +351,19 @@ function container(target) {
 
 var is = /*#__PURE__*/Object.freeze({
     sprite: sprite,
-    text: text$1,
+    text: text,
     container: container
 });
 
 function createQuery(stage, query) {
     return function (selector) {
         var com = [];
-        // @ts-ignore
         var any = fns.reduce(function (prev, current) { return current(prev, query); }, selector);
         var type = typeof any;
         switch (type) {
             case 'string':
                 selector = any.trim();
-                if (['container', 'sprite', 'text'].includes(selector)) {
+                if (['view', 'sprite', 'text'].includes(selector)) {
                     com.push.apply(com, getTypedItem(selector, get$1(stage)));
                 }
                 else {
@@ -444,7 +429,15 @@ function get$1(object) {
     return result;
 }
 function findBy(key, value, array) {
-    return array.filter(function (item) { return item[key] === value; });
+    return array.filter(function (item) {
+        if (typeof item[key] === 'string') {
+            var vals = item[key].split(' ');
+            return vals.includes(value);
+        }
+        else {
+            return item[key] === value;
+        }
+    });
 }
 
 var query = function (stage) { return window.$ = createQuery(stage, query); };

@@ -4,14 +4,13 @@ import { fns } from '../globals/use'
 export function createQuery(stage: any, query: typeof $) {
     return (selector: any) => {
         const com: any[] = []
-        // @ts-ignore
         const any = fns.reduce((prev: any, current: any) => current(prev, query), selector)
         const type = typeof any
 
         switch (type) {
             case 'string':
                 selector = any.trim()
-                if (['container', 'sprite', 'text'].includes(selector)) {
+                if (['view', 'sprite', 'text'].includes(selector)) {
                     com.push(...getTypedItem(selector, get(stage)))
                 } else {
                     const parsed = parseStringQuery(selector)
@@ -86,5 +85,12 @@ function find(item: any, array: any[]) {
 }
 
 function findBy(key: string, value: any, array: any[]) {
-    return array.filter((item) => item[key] === value)
+    return array.filter((item) => {
+        if (typeof item[key] === 'string') {
+            const vals = item[key].split(' ')
+            return vals.includes(value)
+        } else {
+            return item[key] === value 
+        }
+    })
 }
