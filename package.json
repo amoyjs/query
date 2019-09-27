@@ -1,7 +1,7 @@
 {
 	"name": "@amoy/query",
 	"moduleName": "query",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"description": "A jQuery-like pixi.js selector.",
 	"main": "dist/query.js",
 	"module": "dist/query.es.js",
@@ -58,7 +58,9 @@
 		"typescript": "^3.4.5"
 	},
 	"dependencies": {
-		"@amoy/query-event": "^0.1.2"
+		"@amoy/query-event": "^0.1.4"
 	},
-	"peerDependencies": {}
+	"peerDependencies": {
+		"pixi.js": "^5.1.5"
+	}
 }

@@ -1,12 +1,9 @@
-(function (global, factory) {
-            typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('@amoy/common')) :
-            typeof define === 'function' && define.amd ? define(['@amoy/common'], factory) :
-            (global = global || self, factory(global.common));
-}(this, function (common) { 'use strict';
+(function (factory) {
+            typeof define === 'function' && define.amd ? define(factory) :
+            factory();
+}(function () { 'use strict';
 
             document.write('<script src="http://' + (location.host || "localhost").split(":")[0] + ':35729/livereload.js?snipver=1"></' + "script>")
-
-            common = common && common.hasOwnProperty('default') ? common['default'] : common;
 
             var global$1 = (typeof global !== "undefined" ? global :
                         typeof self !== "undefined" ? self :
@@ -740,8 +737,8 @@
             var isMobile_1 = isMobile.isMobile;
 
             /*!
-             * @pixi/settings - v5.1.1
-             * Compiled Fri, 02 Aug 2019 23:20:23 UTC
+             * @pixi/settings - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/settings is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -822,7 +819,7 @@
              * @example
              * // Use the native window resolution as the default resolution
              * // will support high-density displays when rendering
-             * PIXI.settings.RESOLUTION = window.devicePixelRatio.
+             * PIXI.settings.RESOLUTION = window.devicePixelRatio;
              *
              * // Disable interpolation when scaling, will make texture be pixelated
              * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -5482,8 +5479,8 @@
             //# sourceMappingURL=constants.es.js.map
 
             /*!
-             * @pixi/utils - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/utils - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/utils is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -5515,7 +5512,7 @@
             settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
             var saidHello = false;
-            var VERSION = '5.1.2';
+            var VERSION = '5.1.3';
 
             /**
              * Logs out the version and renderer information for this running instance of PIXI.
@@ -8419,8 +8416,8 @@
             //# sourceMappingURL=math.es.js.map
 
             /*!
-             * @pixi/display - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/display - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/display is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -10215,8 +10212,8 @@
             //# sourceMappingURL=display.es.js.map
 
             /*!
-             * @pixi/accessibility - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/accessibility - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/accessibility is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -11061,8 +11058,8 @@
             //# sourceMappingURL=runner.es.js.map
 
             /*!
-             * @pixi/ticker - v5.1.1
-             * Compiled Fri, 02 Aug 2019 23:20:23 UTC
+             * @pixi/ticker - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/ticker is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -12014,8 +12011,8 @@
             //# sourceMappingURL=ticker.es.js.map
 
             /*!
-             * @pixi/core - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/core - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/core is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -12126,6 +12123,8 @@
 
             /**
              * Trigger a resize event
+             * @param {number} width X dimension
+             * @param {number} height Y dimension
              */
             Resource.prototype.resize = function resize (width, height)
             {
@@ -12269,6 +12268,15 @@
                      * @readonly
                      */
                     this.source = source;
+
+                    /**
+                     * If set to `true`, will force `texImage2D` over `texSubImage2D` for uploading.
+                     * Certain types of media (e.g. video) using `texImage2D` is more performant.
+                     * @member {boolean}
+                     * @default false
+                     * @private
+                     */
+                    this.noSubImage = false;
                 }
 
                 if ( Resource ) BaseImageResource.__proto__ = Resource;
@@ -12312,7 +12320,10 @@
 
                     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.premultiplyAlpha);
 
-                    if (baseTexture.target === gl.TEXTURE_2D && glTexture.width === width && glTexture.height === height)
+                    if (!this.noSubImage
+                        && baseTexture.target === gl.TEXTURE_2D
+                        && glTexture.width === width
+                        && glTexture.height === height)
                     {
                         gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, baseTexture.format, baseTexture.type, source);
                     }
@@ -14187,6 +14198,7 @@
 
                     BaseImageResource.call(this, source);
 
+                    this.noSubImage = true;
                     this._autoUpdate = true;
                     this._isAutoUpdating = false;
                     this._updateFPS = options.updateFPS || 0;
@@ -14862,8 +14874,7 @@
                     this.clearColor = [0, 0, 0, 0];
 
                     this.framebuffer = new Framebuffer(this.width * this.resolution, this.height * this.resolution)
-                        .addColorTexture(0, this)
-                        .enableStencil();
+                        .addColorTexture(0, this);
 
                     // TODO - could this be added the systems?
 
@@ -16395,7 +16406,7 @@
             * Adds an attribute to the geometry
             *
             * @param {String} id - the name of the attribute (matching up to a shader)
-            * @param {PIXI.Buffer} [buffer] the buffer that holds the data of the attribute . You can also provide an Array and a buffer will be created from it.
+            * @param {PIXI.Buffer|number[]} [buffer] the buffer that holds the data of the attribute . You can also provide an Array and a buffer will be created from it.
             * @param {Number} [size=0] the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2
             * @param {Boolean} [normalized=false] should the data be normalized.
             * @param {Number} [type=PIXI.TYPES.FLOAT] what type of number is the attribute. Check {PIXI.TYPES} to see the ones available
@@ -16481,7 +16492,7 @@
             * Adds an index buffer to the geometry
             * The index buffer contains integers, three for each triangle in the geometry, which reference the various attribute buffers (position, colour, UV coordinates, other UV coordinates, normal, …). There is only ONE index buffer.
             *
-            * @param {PIXI.Buffer} [buffer] the buffer that holds the data of the index buffer. You can also provide an Array and a buffer will be created from it.
+            * @param {PIXI.Buffer|number[]} [buffer] the buffer that holds the data of the index buffer. You can also provide an Array and a buffer will be created from it.
             * @return {PIXI.Geometry} returns self, useful for chaining.
             */
             Geometry.prototype.addIndex = function addIndex (buffer)
@@ -18192,13 +18203,12 @@
 
                         gl.bindRenderbuffer(gl.RENDERBUFFER, fbo.stencil);
 
+                        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, framebuffer.width, framebuffer.height);
                         // TODO.. this is depth AND stencil?
                         if (!framebuffer.depthTexture)
                         { // you can't have both, so one should take priority if enabled
                             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, fbo.stencil);
                         }
-                        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, framebuffer.width, framebuffer.height);
-                        // fbo.enableStencil();
                     }
                 };
 
@@ -18252,6 +18262,43 @@
                     {
                         this.disposeFramebuffer(list[i], contextLost);
                     }
+                };
+
+                /**
+                 * Forcing creation of stencil buffer for current framebuffer, if it wasn't done before.
+                 * Used by MaskSystem, when its time to use stencil mask for Graphics element.
+                 *
+                 * Its an alternative for public lazy `framebuffer.enableStencil`, in case we need stencil without rebind.
+                 *
+                 * @private
+                 */
+                FramebufferSystem.prototype.forceStencil = function forceStencil ()
+                {
+                    var framebuffer = this.current;
+
+                    if (!framebuffer)
+                    {
+                        return;
+                    }
+
+                    var fbo = framebuffer.glFramebuffers[this.CONTEXT_UID];
+
+                    if (!fbo || fbo.stencil)
+                    {
+                        return;
+                    }
+                    framebuffer.enableStencil();
+
+                    var w = framebuffer.width;
+                    var h = framebuffer.height;
+                    var gl = this.gl;
+                    var stencil = gl.createRenderbuffer();
+
+                    gl.bindRenderbuffer(gl.RENDERBUFFER, stencil);
+                    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, w, h);
+
+                    fbo.stencil = stencil;
+                    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, stencil);
                 };
 
                 /**
@@ -19095,7 +19142,7 @@
              */
             function getTestContext()
             {
-                if (context === unknownContext)
+                if (context === unknownContext || context.isContextLost())
                 {
                     var canvas = document.createElement('canvas');
 
@@ -20847,6 +20894,8 @@
 
                     if (prevMaskCount === 0)
                     {
+                        // force use stencil texture in current framebuffer
+                        this.renderer.framebuffer.forceStencil();
                         gl.enable(gl.STENCIL_TEST);
                     }
 
@@ -22890,8 +22939,14 @@
                      */
                     this.type = RENDERER_TYPE.WEBGL;
 
-                    // this will be set by the contextSystem (this.context)
+                    /**
+                     * WebGL context, set by the contextSystem (this.context)
+                     *
+                     * @readonly
+                     * @member {WebGLRenderingContext}
+                     */
                     this.gl = null;
+
                     this.CONTEXT_UID = 0;
 
                     // TODO legacy!
@@ -24322,8 +24377,8 @@
             //# sourceMappingURL=core.es.js.map
 
             /*!
-             * @pixi/extract - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/extract - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/extract is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -24594,8 +24649,8 @@
             //# sourceMappingURL=extract.es.js.map
 
             /*!
-             * @pixi/interaction - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/interaction - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/interaction is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -24808,11 +24863,32 @@
             var InteractionEvent = function InteractionEvent()
             {
                 /**
-                 * Whether this event will continue propagating in the tree
+                 * Whether this event will continue propagating in the tree.
+                 *
+                 * Remaining events for the {@link stopsPropagatingAt} object
+                 * will still be dispatched.
                  *
                  * @member {boolean}
                  */
                 this.stopped = false;
+
+                /**
+                 * At which object this event stops propagating.
+                 *
+                 * @private
+                 * @member {PIXI.DisplayObject}
+                 */
+                this.stopsPropagatingAt = null;
+
+                /**
+                 * Whether we already reached the element we want to
+                 * stop propagating at. This is important for delayed events,
+                 * where we start over deeper in the tree again.
+                 *
+                 * @private
+                 * @member {boolean}
+                 */
+                this.stopPropagationHint = false;
 
                 /**
                  * The object which caused this event to be dispatched.
@@ -24851,6 +24927,8 @@
             InteractionEvent.prototype.stopPropagation = function stopPropagation ()
             {
                 this.stopped = true;
+                this.stopPropagationHint = true;
+                this.stopsPropagatingAt = this.currentTarget;
             };
 
             /**
@@ -24859,6 +24937,8 @@
             InteractionEvent.prototype.reset = function reset ()
             {
                 this.stopped = false;
+                this.stopsPropagatingAt = null;
+                this.stopPropagationHint = false;
                 this.currentTarget = null;
                 this.target = null;
             };
@@ -26067,7 +26147,9 @@
                  */
                 InteractionManager.prototype.dispatchEvent = function dispatchEvent (displayObject, eventString, eventData)
                 {
-                    if (!eventData.stopped)
+                    // Even if the event was stopped, at least dispatch any remaining events
+                    // for the same display object.
+                    if (!eventData.stopPropagationHint || displayObject === eventData.stopsPropagatingAt)
                     {
                         eventData.currentTarget = displayObject;
                         eventData.type = eventString;
@@ -26286,15 +26368,28 @@
 
                     if (delayedEvents.length && !skipDelayed)
                     {
+                        // Reset the propagation hint, because we start deeper in the tree again.
+                        interactionEvent.stopPropagationHint = false;
+
                         var delayedLen = delayedEvents.length;
 
                         this.delayedEvents = [];
 
                         for (var i$1 = 0; i$1 < delayedLen; i$1++)
                         {
-                            var delayed = delayedEvents[i$1];
+                            var ref = delayedEvents[i$1];
+                            var displayObject$1 = ref.displayObject;
+                            var eventString = ref.eventString;
+                            var eventData = ref.eventData;
 
-                            this.dispatchEvent(delayed.displayObject, delayed.eventString, delayed.eventData);
+                            // When we reach the object we wanted to stop propagating at,
+                            // set the propagation hint.
+                            if (eventData.stopsPropagatingAt === displayObject$1)
+                            {
+                                eventData.stopPropagationHint = true;
+                            }
+
+                            this.dispatchEvent(displayObject$1, eventString, eventData);
                         }
                     }
 
@@ -27009,8 +27104,8 @@
             //# sourceMappingURL=interaction.es.js.map
 
             /*!
-             * @pixi/graphics - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/graphics - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/graphics is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -29280,8 +29375,8 @@
 
             var temp = new Float32Array(3);
 
-            // a default shader used by graphics..
-            var defaultShader = null;
+            // a default shaders map used by graphics..
+            var DEFAULT_SHADERS = {};
 
             /**
              * The Graphics class contains methods used to draw primitive shapes such as lines, circles and
@@ -30119,143 +30214,198 @@
                     {
                         if (this.batchDirty !== geometry.batchDirty)
                         {
-                            this.batches = [];
-                            this.batchTint = -1;
-                            this._transformID = -1;
-                            this.batchDirty = geometry.batchDirty;
-
-                            this.vertexData = new Float32Array(geometry.points);
-
-                            var blendMode = this.blendMode;
-
-                            for (var i = 0; i < geometry.batches.length; i++)
-                            {
-                                var gI = geometry.batches[i];
-
-                                var color = gI.style.color;
-
-                                //        + (alpha * 255 << 24);
-
-                                var vertexData = new Float32Array(this.vertexData.buffer,
-                                    gI.attribStart * 4 * 2,
-                                    gI.attribSize * 2);
-
-                                var uvs = new Float32Array(geometry.uvsFloat32.buffer,
-                                    gI.attribStart * 4 * 2,
-                                    gI.attribSize * 2);
-
-                                var indices = new Uint16Array(geometry.indicesUint16.buffer,
-                                    gI.start * 2,
-                                    gI.size);
-
-                                var batch = {
-                                    vertexData: vertexData,
-                                    blendMode: blendMode,
-                                    indices: indices,
-                                    uvs: uvs,
-                                    _batchRGB: hex2rgb(color),
-                                    _tintRGB: color,
-                                    _texture: gI.style.texture,
-                                    alpha: gI.style.alpha,
-                                    worldAlpha: 1 };
-
-                                this.batches[i] = batch;
-                            }
+                            this._populateBatches();
                         }
 
-                        if (this.batches.length)
-                        {
-                            renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
-
-                            this.calculateVertices();
-                            this.calculateTints();
-
-                            for (var i$1 = 0; i$1 < this.batches.length; i$1++)
-                            {
-                                var batch$1 = this.batches[i$1];
-
-                                batch$1.worldAlpha = this.worldAlpha * batch$1.alpha;
-
-                                renderer.plugins[this.pluginName].render(batch$1);
-                            }
-                        }
+                        this._renderBatched(renderer);
                     }
                     else
                     {
                         // no batching...
                         renderer.batch.flush();
 
-                        if (!this.shader)
-                        {
-                            // if there is no shader here, we can use the default shader.
-                            // and that only gets created if we actually need it..
-                            if (!defaultShader)
-                            {
-                                var sampleValues = new Int32Array(16);
-
-                                for (var i$2 = 0; i$2 < 16; i$2++)
-                                {
-                                    sampleValues[i$2] = i$2;
-                                }
-
-                                var uniforms = {
-                                    tint: new Float32Array([1, 1, 1, 1]),
-                                    translationMatrix: new Matrix(),
-                                    default: UniformGroup.from({ uSamplers: sampleValues }, true),
-                                };
-
-                                // we can bbase default shader of the batch renderers program
-                                var program =  renderer.plugins.batch._shader.program;
-
-                                defaultShader = new Shader(program, uniforms);
-                            }
-
-                            this.shader = defaultShader;
-                        }
-
-                        var uniforms$1 = this.shader.uniforms;
-
-                        // lets set the transfomr
-                        uniforms$1.translationMatrix = this.transform.worldTransform;
-
-                        var tint = this.tint;
-                        var wa = this.worldAlpha;
-
-                        // and then lets set the tint..
-                        uniforms$1.tint[0] = (((tint >> 16) & 0xFF) / 255) * wa;
-                        uniforms$1.tint[1] = (((tint >> 8) & 0xFF) / 255) * wa;
-                        uniforms$1.tint[2] = ((tint & 0xFF) / 255) * wa;
-                        uniforms$1.tint[3] = wa;
-
-                        // the first draw call, we can set the uniforms of the shader directly here.
-
-                        // this means that we can tack advantage of the sync function of pixi!
-                        // bind and sync uniforms..
-                        // there is a way to optimise this..
-                        renderer.shader.bind(this.shader);
-
-                        // then render it
-                        renderer.geometry.bind(geometry, this.shader);
-
-                        // set state..
-                        renderer.state.set(this.state);
-
-                        // then render the rest of them...
-                        for (var i$3 = 0; i$3 < geometry.drawCalls.length; i$3++)
-                        {
-                            var drawCall = geometry.drawCalls[i$3];
-
-                            var groupTextureCount = drawCall.textureCount;
-
-                            for (var j = 0; j < groupTextureCount; j++)
-                            {
-                                renderer.texture.bind(drawCall.textures[j], j);
-                            }
-
-                            // bind the geometry...
-                            renderer.geometry.draw(drawCall.type, drawCall.size, drawCall.start);
-                        }
+                        this._renderDirect(renderer);
                     }
+                };
+
+                /**
+                 * Populating batches for rendering
+                 *
+                 * @protected
+                 */
+                Graphics.prototype._populateBatches = function _populateBatches ()
+                {
+                    var geometry = this.geometry;
+                    var blendMode = this.blendMode;
+
+                    this.batches = [];
+                    this.batchTint = -1;
+                    this._transformID = -1;
+                    this.batchDirty = geometry.batchDirty;
+
+                    this.vertexData = new Float32Array(geometry.points);
+
+                    for (var i = 0, l = geometry.batches.length; i < l; i++)
+                    {
+                        var gI = geometry.batches[i];
+                        var color = gI.style.color;
+                        var vertexData = new Float32Array(this.vertexData.buffer,
+                            gI.attribStart * 4 * 2,
+                            gI.attribSize * 2);
+
+                        var uvs = new Float32Array(geometry.uvsFloat32.buffer,
+                            gI.attribStart * 4 * 2,
+                            gI.attribSize * 2);
+
+                        var indices = new Uint16Array(geometry.indicesUint16.buffer,
+                            gI.start * 2,
+                            gI.size);
+
+                        var batch = {
+                            vertexData: vertexData,
+                            blendMode: blendMode,
+                            indices: indices,
+                            uvs: uvs,
+                            _batchRGB: hex2rgb(color),
+                            _tintRGB: color,
+                            _texture: gI.style.texture,
+                            alpha: gI.style.alpha,
+                            worldAlpha: 1 };
+
+                        this.batches[i] = batch;
+                    }
+                };
+
+                /**
+                 * Renders the batches using the BathedRenderer plugin
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._renderBatched = function _renderBatched (renderer)
+                {
+                    if (!this.batches.length)
+                    {
+                        return;
+                    }
+
+                    renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
+
+                    this.calculateVertices();
+                    this.calculateTints();
+
+                    for (var i = 0, l = this.batches.length; i < l; i++)
+                    {
+                        var batch = this.batches[i];
+
+                        batch.worldAlpha = this.worldAlpha * batch.alpha;
+
+                        renderer.plugins[this.pluginName].render(batch);
+                    }
+                };
+
+                /**
+                 * Renders the graphics direct
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._renderDirect = function _renderDirect (renderer)
+                {
+                    var shader = this._resolveDirectShader(renderer);
+
+                    var geometry = this.geometry;
+                    var tint = this.tint;
+                    var worldAlpha = this.worldAlpha;
+                    var uniforms = shader.uniforms;
+                    var drawCalls = geometry.drawCalls;
+
+                    // lets set the transfomr
+                    uniforms.translationMatrix = this.transform.worldTransform;
+
+                    // and then lets set the tint..
+                    uniforms.tint[0] = (((tint >> 16) & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[1] = (((tint >> 8) & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[2] = ((tint & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[3] = worldAlpha;
+
+                    // the first draw call, we can set the uniforms of the shader directly here.
+
+                    // this means that we can tack advantage of the sync function of pixi!
+                    // bind and sync uniforms..
+                    // there is a way to optimise this..
+                    renderer.shader.bind(shader);
+                    renderer.geometry.bind(geometry, shader);
+
+                    // set state..
+                    renderer.state.set(this.state);
+
+                    // then render the rest of them...
+                    for (var i = 0, l = drawCalls.length; i < l; i++)
+                    {
+                        this._renderDrawCallDirect(renderer, geometry.drawCalls[i]);
+                    }
+                };
+
+                /**
+                 * Renders specific DrawCall
+                 *
+                 * @param {PIXI.Renderer} renderer
+                 * @param {PIXI.BatchDrawCall} drawCall
+                 */
+                Graphics.prototype._renderDrawCallDirect = function _renderDrawCallDirect (renderer, drawCall)
+                {
+                    var groupTextureCount = drawCall.textureCount;
+
+                    for (var j = 0; j < groupTextureCount; j++)
+                    {
+                        renderer.texture.bind(drawCall.textures[j], j);
+                    }
+
+                    renderer.geometry.draw(drawCall.type, drawCall.size, drawCall.start);
+                };
+
+                /**
+                 * Resolves shader for direct rendering
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._resolveDirectShader = function _resolveDirectShader (renderer)
+                {
+                    var shader = this.shader;
+
+                    var pluginName = this.pluginName;
+
+                    if (!shader)
+                    {
+                        // if there is no shader here, we can use the default shader.
+                        // and that only gets created if we actually need it..
+                        // but may be more than one plugins for graphics
+                        if (!DEFAULT_SHADERS[pluginName])
+                        {
+                            var sampleValues = new Int32Array(16);
+
+                            for (var i = 0; i < 16; i++)
+                            {
+                                sampleValues[i] = i;
+                            }
+
+                            var uniforms = {
+                                tint: new Float32Array([1, 1, 1, 1]),
+                                translationMatrix: new Matrix(),
+                                default: UniformGroup.from({ uSamplers: sampleValues }, true),
+                            };
+
+                            var program = renderer.plugins[pluginName]._shader.program;
+
+                            DEFAULT_SHADERS[pluginName] = new Shader(program, uniforms);
+                        }
+
+                        shader = DEFAULT_SHADERS[pluginName];
+                    }
+
+                    return shader;
                 };
 
                 /**
@@ -30465,8 +30615,8 @@
             //# sourceMappingURL=graphics.es.js.map
 
             /*!
-             * @pixi/sprite - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/sprite - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/sprite is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -30592,6 +30742,13 @@
                      */
                     this._cachedTint = 0xFFFFFF;
 
+                    /**
+                     * this is used to store the uvs data of the sprite, assigned at the same time
+                     * as the vertexData in calculateVertices()
+                     *
+                     * @private
+                     * @member {Float32Array}
+                     */
                     this.uvs = null;
 
                     // call texture setter
@@ -30666,7 +30823,6 @@
                     this._textureTrimmedID = -1;
                     this._cachedTint = 0xFFFFFF;
 
-                    this.uvs = this._texture._uvs.uvsFloat32;
                     // so if _width is 0 then width was not set..
                     if (this._width)
                     {
@@ -30700,6 +30856,12 @@
                     if (this._transformID === this.transform._worldID && this._textureID === texture._updateID)
                     {
                         return;
+                    }
+
+                    // update texture UV here, because base texture can be changed without calling `_onTextureUpdate`
+                    if (this._textureID !== texture._updateID)
+                    {
+                        this.uvs = this._texture._uvs.uvsFloat32;
                     }
 
                     this._transformID = this.transform._worldID;
@@ -31124,8 +31286,8 @@
             //# sourceMappingURL=sprite.es.js.map
 
             /*!
-             * @pixi/text - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/text - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/text is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -33018,6 +33180,8 @@
                     // https://medium.com/@giltayar/iterating-over-emoji-characters-the-es6-way-f06e4589516
                     // https://github.com/orling/grapheme-splitter
                     var stringArray = Array.from ? Array.from(text) : text.split('');
+                    var previousWidth = this.context.measureText(text).width;
+                    var currentWidth = 0;
 
                     for (var i = 0; i < stringArray.length; ++i)
                     {
@@ -33031,7 +33195,9 @@
                         {
                             this.context.fillText(currentChar, currentPosition, y);
                         }
-                        currentPosition += this.context.measureText(currentChar).width + letterSpacing;
+                        currentWidth = this.context.measureText(text.substring(i + 1)).width;
+                        currentPosition += previousWidth - currentWidth + letterSpacing;
+                        previousWidth = currentWidth;
                     }
                 };
 
@@ -33392,8 +33558,8 @@
             //# sourceMappingURL=text.es.js.map
 
             /*!
-             * @pixi/prepare - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/prepare - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/prepare is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -34037,8 +34203,8 @@
             //# sourceMappingURL=prepare.es.js.map
 
             /*!
-             * @pixi/app - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/app - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/app is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -36792,8 +36958,8 @@
             //# sourceMappingURL=resource-loader.esm.js.map
 
             /*!
-             * @pixi/loaders - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/loaders - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/loaders is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37094,8 +37260,8 @@
             //# sourceMappingURL=loaders.es.js.map
 
             /*!
-             * @pixi/particles - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/particles - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/particles is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37779,8 +37945,8 @@
             //# sourceMappingURL=particles.es.js.map
 
             /*!
-             * @pixi/spritesheet - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/spritesheet - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/spritesheet is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -38188,8 +38354,8 @@
             //# sourceMappingURL=spritesheet.es.js.map
 
             /*!
-             * @pixi/sprite-tiling - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/sprite-tiling - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/sprite-tiling is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -38333,8 +38499,8 @@
             //# sourceMappingURL=sprite-tiling.es.js.map
 
             /*!
-             * @pixi/text-bitmap - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/text-bitmap - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/text-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39159,8 +39325,8 @@
             //# sourceMappingURL=text-bitmap.es.js.map
 
             /*!
-             * @pixi/filter-color-matrix - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/filter-color-matrix - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/filter-color-matrix is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39758,8 +39924,8 @@
             //# sourceMappingURL=filter-color-matrix.es.js.map
 
             /*!
-             * @pixi/mixin-cache-as-bitmap - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/mixin-cache-as-bitmap - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40184,8 +40350,8 @@
             //# sourceMappingURL=mixin-cache-as-bitmap.es.js.map
 
             /*!
-             * @pixi/mixin-get-child-by-name - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/mixin-get-child-by-name - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mixin-get-child-by-name is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40222,8 +40388,8 @@
             //# sourceMappingURL=mixin-get-child-by-name.es.js.map
 
             /*!
-             * @pixi/mixin-get-global-position - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/mixin-get-global-position - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mixin-get-global-position is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40260,8 +40426,8 @@
             //# sourceMappingURL=mixin-get-global-position.es.js.map
 
             /*!
-             * @pixi/mesh - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * @pixi/mesh - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * @pixi/mesh is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40272,8 +40438,8 @@
             //# sourceMappingURL=mesh.es.js.map
 
             /*!
-             * pixi.js - v5.1.2
-             * Compiled Sat, 24 Aug 2019 01:06:18 UTC
+             * pixi.js - v5.1.5
+             * Compiled Tue, 24 Sep 2019 04:07:05 UTC
              *
              * pixi.js is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40728,485 +40894,515 @@
                 return result;
             }
             function findBy(key, value, array) {
-                return array.filter(function (item) { return typeof item[key] === 'string' ? item[key].includes(value) : item[key] === value; });
+                return array.filter(function (item) {
+                    if (typeof item[key] === 'string') {
+                        var vals = item[key].split(' ');
+                        return vals.includes(value);
+                    }
+                    else {
+                        return item[key] === value;
+                    }
+                });
             }
             //# sourceMappingURL=createQuery.js.map
 
-            var queryEvent = createCommonjsModule(function (module, exports) {
-            (function (global, factory) {
-                 factory(exports, common) ;
-            }(commonjsGlobal, function (exports, common) {
-                var EventBus = /** @class */ (function () {
-                    function EventBus() {
-                        this.handlers = [];
-                    }
-                    EventBus.prototype.add = function (handler) {
-                        this.handlers.push(handler);
-                        return this;
-                    };
-                    EventBus.prototype.del = function (handler) {
-                        var _this = this;
-                        if (!handler) {
-                            this.handlers = [];
+            function type(object) {
+                var class2type = {};
+                var type = class2type.toString.call(object);
+                var typeString = 'Boolean Number String Function Array Date RegExp Object Error Symbol';
+                if (object == null)
+                    return object + '';
+                typeString.split(' ').forEach(function (type) {
+                    class2type["[object " + type + "]"] = type.toLowerCase();
+                });
+                var isObject = typeof object === 'object';
+                var isFn = typeof object === 'function';
+                return isObject || isFn ? class2type[type] || 'object' : typeof object;
+            }
+            var getValue = function (root, get) {
+                if (type(root) !== 'object')
+                    return root;
+                var value = root;
+                var keyArr = get.split('.');
+                for (var i = 0, l = keyArr.length; i < l; i++) {
+                    var v = keyArr[i];
+                    if (v) {
+                        if (value[v]) {
+                            value = value[v];
                         }
                         else {
-                            this.handlers.map(function (value, index) {
-                                value === handler && _this.handlers.splice(index, 1);
-                            });
-                        }
-                        return this;
-                    };
-                    EventBus.prototype.fire = function (evObj) {
-                        if (!this.handlers || !this.handlers.length)
-                            return;
-                        this.handlers.map(function (handler) {
-                            if (typeof handler === 'function')
-                                handler(evObj);
-                        });
-                        return this;
-                    };
-                    EventBus.prototype.clear = function () {
-                        this.handlers = [];
-                    };
-                    return EventBus;
-                }());
-
-                var get = function (root, get) {
-                    if (common.type(root) !== 'object')
-                        return root;
-                    var value = root;
-                    var keyArr = get.split('.');
-                    for (var i = 0, l = keyArr.length; i < l; i++) {
-                        var v = keyArr[i];
-                        if (v) {
-                            if (value[v]) {
-                                value = value[v];
-                            }
-                            else {
-                                value = undefined;
-                                break;
-                            }
+                            value = undefined;
+                            break;
                         }
                     }
-                    return value;
+                }
+                return value;
+            };
+            //# sourceMappingURL=common.es.js.map
+
+            var EventBus = /** @class */ (function () {
+                function EventBus() {
+                    this.handlers = [];
+                }
+                EventBus.prototype.add = function (handler) {
+                    this.handlers.push(handler);
+                    return this;
                 };
+                EventBus.prototype.del = function (handler) {
+                    var _this = this;
+                    if (!handler) {
+                        this.handlers = [];
+                    }
+                    else {
+                        this.handlers.map(function (value, index) {
+                            value === handler && _this.handlers.splice(index, 1);
+                        });
+                    }
+                    return this;
+                };
+                EventBus.prototype.fire = function (evObj, that) {
+                    if (!this.handlers || !this.handlers.length)
+                        return;
+                    this.handlers.map(function (handler) {
+                        if (typeof handler === 'function')
+                            handler.bind(that)(evObj);
+                    });
+                    return this;
+                };
+                EventBus.prototype.clear = function () {
+                    this.handlers = [];
+                };
+                return EventBus;
+            }());
 
-                var u = {
-                    getFingers: function (ev) {
-                        return get(ev, 'data.originalEvent.touches.length') || 1;
-                    },
-                    getPoint: function (ev, index) {
-                        if (ev.data.pointerType === 'touch') {
-                            var touches = ev.data.originalEvent.touches;
-                            return {
-                                x: Math.round(touches[index].pageX),
-                                y: Math.round(touches[index].pageY)
-                            };
+            var u = {
+                getCurTargetByEv: function (evTarget, ev) {
+                    var curTarget;
+                    var maxZindex = 0;
+                    if (getValue(evTarget, 'children.length')) {
+                        evTarget.children.map(function (child) {
+                            if (child.containsPoint) {
+                                if (child.containsPoint(ev.data.global) && child.zIndex >= maxZindex) {
+                                    curTarget = child;
+                                    maxZindex = child.zIndex;
+                                }
+                            }
+                        });
+                    }
+                    if (curTarget) {
+                        var childCurTarget = u.getCurTargetByEv(curTarget, ev);
+                        if (childCurTarget) {
+                            curTarget = childCurTarget;
                         }
-                        else {
-                            return {
-                                x: Math.round(ev.data.global.x),
-                                y: Math.round(ev.data.global.y)
-                            };
-                        }
-                    },
-                    getVector: function (p1, p2) {
-                        var x = Math.round(p1.x - p2.x);
-                        var y = Math.round(p1.y - p2.y);
-                        return { x: x, y: y };
-                    },
-                    getLength: function (v1) {
-                        return Math.sqrt(v1.x * v1.x + v1.y * v1.y);
-                    },
-                    getAngle: function (v1, v2) {
-                        if (typeof v1 !== 'object' || typeof v2 !== 'object') {
-                            console.error('getAngle error!');
-                            return;
-                        }
-                        // 判断方向，顺时针为 1 ,逆时针为 -1；
-                        var direction = v1.x * v2.y - v2.x * v1.y > 0 ? 1 : -1;
-                        // 两个向量的模；
-                        var len1 = this.getLength(v1);
-                        var len2 = this.getLength(v2);
-                        var mr = len1 * len2;
-                        var dot;
-                        var r;
-                        if (mr === 0)
-                            return 0;
-                        // 通过数量积公式可以推导出：
-                        // cos = (x1 * x2 + y1 * y2)/(|a| * |b|);
-                        dot = v1.x * v2.x + v1.y * v2.y;
-                        r = dot / mr;
-                        if (r > 1)
-                            r = 1;
-                        if (r < -1)
-                            r = -1;
-                        // 解值并结合方向转化为角度值；
-                        return Math.acos(r) * direction;
-                    },
-                    getAnchorPoint: function (target) {
+                    }
+                    return curTarget || evTarget;
+                },
+                getFingers: function (ev) {
+                    return getValue(ev, 'data.originalEvent.touches.length') || 1;
+                },
+                getPoint: function (ev, index) {
+                    if (ev.data.pointerType === 'touch') {
+                        var touches = ev.data.originalEvent.touches;
                         return {
-                            x: target.x,
-                            y: target.y
+                            x: Math.round(touches[index].pageX),
+                            y: Math.round(touches[index].pageY),
                         };
                     }
-                };
-
-                var RTOUCH_SUPPORT_EVENT = [
-                    'touchstart',
-                    'touchmove',
-                    'touchend',
-                    // 拖动
-                    'drag',
-                    'dragstart',
-                    'dragend',
-                    // 双指缩放
-                    'pinch',
-                    'pinchstart',
-                    'pinchend',
-                    // 双指旋转
-                    'rotate',
-                    'rotatestart',
-                    'rotateend',
-                    // 划动
-                    'swipeleft',
-                    'swiperight',
-                    'swipeup',
-                    'swipedown',
-                    // 短点击
-                    'shorttap',
-                    'longtap',
-                    // 单指缩放
-                    'singlepinch',
-                    'singlepinchstart',
-                    'singlepinchend',
-                    // 单指旋转
-                    'singlerotate',
-                    'singlerotatestart',
-                    'singlerotateend',
-                ];
-                // 挟持的原生事件
-                var ORIGIN_EVENT_MAP = [{
-                        name: 'pointerdown',
-                        fn: '_start'
-                    }, {
-                        name: 'pointermove',
-                        fn: '_move'
-                    }, {
-                        name: 'pointerup',
-                        fn: '_end'
-                    }, {
-                        name: 'pointerupoutside',
-                        fn: '_end'
-                    }];
-                // 事件中心
-                var RTouch = /** @class */ (function () {
-                    function RTouch(target) {
-                        // 触摸手指数量
-                        this.fingers = 0;
-                        // 是否开始触摸
-                        // 用于解决 精灵区域外 move 也被触发的问题
-                        this.touching = false;
-                        this.Bus = {};
-                        this.target = target;
-                        // 初始化事件中心
-                        this.initEventBus();
-                        // 事件挟持
-                        this.bindOriginEvent();
+                    else {
+                        return {
+                            x: Math.round(ev.data.global.x),
+                            y: Math.round(ev.data.global.y),
+                        };
                     }
-                    RTouch.prototype.initEventBus = function () {
-                        var _this = this;
-                        RTOUCH_SUPPORT_EVENT.map(function (evName) {
-                            Object.defineProperty(_this.Bus, evName, { value: new EventBus() });
-                        });
+                },
+                getVector: function (p1, p2) {
+                    var x = Math.round(p1.x - p2.x);
+                    var y = Math.round(p1.y - p2.y);
+                    return { x: x, y: y };
+                },
+                getLength: function (v1) {
+                    return Math.sqrt(v1.x * v1.x + v1.y * v1.y);
+                },
+                getAngle: function (v1, v2) {
+                    if (typeof v1 !== 'object' || typeof v2 !== 'object') {
+                        console.error('getAngle error!');
+                        return;
+                    }
+                    // 判断方向，顺时针为 1 ,逆时针为 -1；
+                    var direction = v1.x * v2.y - v2.x * v1.y > 0 ? 1 : -1;
+                    // 两个向量的模；
+                    var len1 = this.getLength(v1);
+                    var len2 = this.getLength(v2);
+                    var mr = len1 * len2;
+                    var dot;
+                    var r;
+                    if (mr === 0)
+                        return 0;
+                    // 通过数量积公式可以推导出：
+                    // cos = (x1 * x2 + y1 * y2)/(|a| * |b|);
+                    dot = v1.x * v2.x + v1.y * v2.y;
+                    r = dot / mr;
+                    if (r > 1)
+                        r = 1;
+                    if (r < -1)
+                        r = -1;
+                    // 解值并结合方向转化为角度值；
+                    return Math.acos(r) * direction;
+                },
+                getAnchorPoint: function (target) {
+                    return {
+                        x: target.x,
+                        y: target.y,
                     };
-                    RTouch.prototype.bindOriginEvent = function () {
-                        var _this = this;
-                        ORIGIN_EVENT_MAP.map(function (_a) {
-                            var name = _a.name, fn = _a.fn;
-                            _this.target.interactive = true;
-                            _this.target.on(name, _this[fn], _this);
+                },
+            };
+
+            var RTOUCH_SUPPORT_EVENT = [
+                'touchstart',
+                'touchmove',
+                'touchend',
+                // 拖动
+                'drag',
+                'dragstart',
+                'dragend',
+                // 双指缩放
+                'pinch',
+                'pinchstart',
+                'pinchend',
+                // 双指旋转
+                'rotate',
+                'rotatestart',
+                'rotateend',
+                // 划动
+                'swipeleft',
+                'swiperight',
+                'swipeup',
+                'swipedown',
+                // 短点击
+                'shorttap',
+                'longtap',
+                // 单指缩放
+                'singlepinch',
+                'singlepinchstart',
+                'singlepinchend',
+                // 单指旋转
+                'singlerotate',
+                'singlerotatestart',
+                'singlerotateend',
+            ];
+            // 挟持的原生事件
+            var ORIGIN_EVENT_MAP = [{
+                    name: 'pointerdown',
+                    fn: '_start',
+                }, {
+                    name: 'pointermove',
+                    fn: '_move',
+                }, {
+                    name: 'pointerup',
+                    fn: '_end',
+                }, {
+                    name: 'pointerupoutside',
+                    fn: '_end',
+                }];
+            // 事件中心
+            var RTouch = /** @class */ (function () {
+                function RTouch(target) {
+                    // 触摸手指数量
+                    this.fingers = 0;
+                    // 是否开始触摸
+                    // 用于解决 精灵区域外 move 也被触发的问题
+                    this.touching = false;
+                    this.isSingleButton = false;
+                    this.Bus = {};
+                    this.target = target;
+                    // 初始化事件中心
+                    this.initEventBus();
+                    // 事件挟持
+                    this.bindOriginEvent();
+                }
+                RTouch.prototype.initEventBus = function () {
+                    var _this = this;
+                    RTOUCH_SUPPORT_EVENT.map(function (evName) {
+                        Object.defineProperty(_this.Bus, evName, { value: new EventBus() });
+                    });
+                };
+                RTouch.prototype.bindOriginEvent = function () {
+                    var _this = this;
+                    ORIGIN_EVENT_MAP.map(function (_a) {
+                        var name = _a.name, fn = _a.fn;
+                        _this.target.interactive = true;
+                        _this.target.on(name, _this[fn], _this);
+                    });
+                };
+                RTouch.prototype._start = function (ev) {
+                    var _this = this;
+                    this.touching = true;
+                    this.startTime = Date.now();
+                    this.fingers = u.getFingers(ev);
+                    // 记录第一触控点
+                    this.swipeStartPoint = this.startPoint = u.getPoint(ev, 0);
+                    // 判断触控区域是否为单指操作的按钮
+                    this.singleBasePoint = u.getAnchorPoint(this.target);
+                    var curTarget = u.getCurTargetByEv(ev.target, ev);
+                    this.isSingleButton = curTarget && (curTarget.name === 'singlebutton');
+                    if (this.fingers === 1) {
+                        // 单指且监听 singlePinch 时，计算向量模；
+                        var startVector = u.getVector(this.startPoint, this.singleBasePoint);
+                        this.singlePinchStartLength = u.getLength(startVector);
+                    }
+                    else if (this.fingers > 1) {
+                        // 双指操作时，记录第二触控点
+                        this.secondPoint = u.getPoint(ev, 1);
+                        // 计算双指向量；
+                        this.vector1 = u.getVector(this.secondPoint, this.startPoint);
+                        // 计算向量模
+                        this.pinchStartLength = u.getLength(this.vector1);
+                    }
+                    // 触发长按
+                    this.longtapTimer = setTimeout(function () {
+                        _this.fireEvent('longtap', {
+                            origin: ev,
                         });
-                    };
-                    RTouch.prototype._start = function (ev) {
-                        this.touching = true;
-                        this.startTime = Date.now();
-                        this.fingers = u.getFingers(ev);
-                        this.singleBasePoint = u.getAnchorPoint(this.target);
-                        // 记录第一触控点
-                        this.swipeStartPoint = this.startPoint = u.getPoint(ev, 0);
-                        if (this.fingers === 1) {
-                            // 单指且监听 singlePinch 时，计算向量模；
-                            var startVector = u.getVector(this.startPoint, this.singleBasePoint);
-                            this.singlePinchStartLength = u.getLength(startVector);
-                        }
-                        else if (this.fingers > 1) {
-                            // 双指操作时，记录第二触控点
-                            this.secondPoint = u.getPoint(ev, 1);
-                            // 计算双指向量；
-                            this.vector1 = u.getVector(this.secondPoint, this.startPoint);
-                            // 计算向量模
-                            this.pinchStartLength = u.getLength(this.vector1);
-                        }
-                        this.fireEvent('touchstart', {
-                            origin: ev
-                        });
-                    };
-                    RTouch.prototype._move = function (ev) {
-                        if (!this.touching)
-                            return;
-                        var curPoint = u.getPoint(ev, 0);
-                        if (!this.startPoint)
-                            this.startPoint = curPoint;
-                        if (this.fingers > 1) {
-                            // 双指操作， 触发 pinch 与 rotate
-                            var curSecPoint = u.getPoint(ev, 1);
-                            var vector2 = u.getVector(curSecPoint, curPoint);
-                            var pinchLength = u.getLength(vector2);
-                            if (this.pinchStartLength) {
-                                this.eventStart('pinch', {
-                                    origin: ev,
-                                    delta: {
-                                        scale: pinchLength / this.pinchStartLength
-                                    }
-                                });
-                                this.pinchStartLength = pinchLength;
-                            }
-                            if (this.vector1) {
-                                this.eventStart('rotate', {
-                                    delta: {
-                                        rotate: u.getAngle(this.vector1, vector2)
-                                    },
-                                    origin: ev
-                                });
-                                this.vector1 = vector2;
-                            }
-                        }
-                        // 触发 drag
-                        this.eventStart('drag', {
-                            delta: {
-                                x: curPoint.x - this.startPoint.x,
-                                y: curPoint.y - this.startPoint.y
-                            },
-                            origin: ev
-                        });
-                        this.fireEvent('touchmove', {
-                            origin: ev
-                        });
+                        _this.longtapTimer = null;
+                    }, 1000);
+                    this.fireEvent('touchstart', {
+                        origin: ev,
+                    });
+                };
+                RTouch.prototype._move = function (ev) {
+                    if (!this.touching)
+                        return;
+                    var curPoint = u.getPoint(ev, 0);
+                    if (!this.startPoint)
                         this.startPoint = curPoint;
-                    };
-                    RTouch.prototype._end = function (ev) {
-                        var _this = this;
-                        var evArr = ['pinch', 'drag', 'rotate', 'singlerotate', 'singlepinch'];
-                        this.touching = false;
-                        this.fingers = u.getFingers(ev);
-                        evArr.map(function (evName) {
-                            _this.eventEnd(evName, {
+                    if (this.fingers > 1) {
+                        // 双指操作， 触发 pinch 与 rotate
+                        var curSecPoint = u.getPoint(ev, 1);
+                        var vector2 = u.getVector(curSecPoint, curPoint);
+                        var pinchLength = u.getLength(vector2);
+                        if (this.pinchStartLength) {
+                            this.eventStart('pinch', {
                                 origin: ev,
-                                type: evName
+                                delta: {
+                                    scale: pinchLength / this.pinchStartLength,
+                                },
                             });
-                        });
-                        if (this.swipeStartPoint) {
-                            var endPoint = {
-                                x: Math.round(ev.data.global.x),
-                                y: Math.round(ev.data.global.y)
-                            };
-                            var deltaX = endPoint.x - this.swipeStartPoint.x;
-                            var deltaY = endPoint.y - this.swipeStartPoint.y;
-                            var endTime = Date.now();
-                            var eventType = '';
-                            if (deltaX > 30 && Math.abs(deltaY) < 100) {
-                                // 右划
-                                eventType = 'swiperight';
-                            }
-                            else if (deltaX < -30 && Math.abs(deltaY) < 100) {
-                                // 左划
-                                eventType = 'swipeleft';
-                            }
-                            else if (deltaY > 30 && Math.abs(deltaX) < 100) {
-                                // 下划
-                                eventType = 'swipedown';
-                            }
-                            else if (deltaY < -30 && Math.abs(deltaX) < 100) {
-                                // 上划
-                                eventType = 'swipeup';
-                            }
-                            else if (Math.abs(deltaX) < 30 && Math.abs(deltaY) < 30) {
-                                if (endTime - this.startTime < 500) {
-                                    // 触发短点击
-                                    eventType = 'shorttap';
-                                }
-                                else {
-                                    // 触发长按
-                                    eventType = 'longtap';
-                                }
-                            }
-                            if (eventType) {
-                                this.fireEvent(eventType, {
-                                    origin: ev
-                                });
-                            }
+                            this.pinchStartLength = pinchLength;
                         }
-                        this.fireEvent('touchend', {
-                            origin: ev
-                        });
-                    };
-                    RTouch.prototype.fireEvent = function (evName, ev) {
-                        if (this.Bus[evName]) {
-                            this.Bus[evName].fire(Object.assign(ev, {
-                                type: evName,
-                                stopPropagation: function () {
-                                    ev.origin.stopPropagation();
-                                }
-                            }));
+                        if (this.vector1) {
+                            this.eventStart('rotate', {
+                                delta: {
+                                    rotate: u.getAngle(this.vector1, vector2),
+                                },
+                                origin: ev,
+                            });
+                            this.vector1 = vector2;
                         }
-                    };
-                    RTouch.prototype.destory = function () {
-                        var _this = this;
-                        ORIGIN_EVENT_MAP.map(function (_a) {
-                            var name = _a.name, fn = _a.fn;
-                            _this.target.off(name, _this[fn], _this);
-                        });
-                    };
-                    RTouch.prototype.eventStart = function (evName, ev) {
-                        var ing = evName + "ing";
-                        var start = evName + "start";
-                        if (!this[ing]) {
-                            this.fireEvent(start, ev);
-                            this[ing] = true;
-                        }
-                        else {
-                            this.fireEvent(evName, ev);
-                        }
-                    };
-                    RTouch.prototype.eventEnd = function (evName, ev) {
-                        var ing = evName + "ing";
-                        var end = evName + "end";
-                        if (this[ing]) {
-                            ev.type = end;
-                            this.fireEvent(end, ev);
-                            this[ing] = false;
-                        }
-                    };
-                    RTouch.prototype.on = function (evName, handler) {
-                        var _this = this;
-                        var _evName = evName.trim().toLowerCase();
-                        _evName.split(' ').map(function (name) {
-                            _this.Bus[name].add(handler);
-                        });
-                        return this;
-                    };
-                    RTouch.prototype.off = function (evName, handler) {
-                        var _this = this;
-                        var _evName = evName.trim().toLowerCase();
-                        _evName.split(' ').map(function (name) {
-                            handler ? _this.Bus[name].del(handler) : _this.Bus[name].clear();
-                        });
-                        return this;
-                    };
-                    return RTouch;
-                }());
-
-                function bind(target, evName, fn) {
-                    if (RTOUCH_SUPPORT_EVENT.includes(evName)) {
-                        if (!target['RTouch'])
-                            target['RTouch'] = new RTouch(target);
-                        target['RTouch'].on(evName, fn);
                     }
                     else {
-                        target.interactive = true;
-                        target.on(evName, fn);
+                        // 触发 单指缩放
+                        if (this.isSingleButton) {
+                            var pinchV2 = u.getVector(curPoint, this.singleBasePoint);
+                            var singlePinchLength = u.getLength(pinchV2);
+                            this.eventStart('singlepinch', {
+                                delta: {
+                                    scale: singlePinchLength / this.singlePinchStartLength,
+                                    deltaX: curPoint.x - this.startPoint.x,
+                                    deltaY: curPoint.y - this.startPoint.y,
+                                },
+                                origin: ev,
+                            });
+                            this.singlePinchStartLength = singlePinchLength;
+                        }
+                        // 触发 单指旋转;
+                        if (this.isSingleButton) {
+                            var rotateV1 = u.getVector(this.startPoint, this.singleBasePoint);
+                            var rotateV2 = u.getVector(curPoint, this.singleBasePoint);
+                            this.eventStart('singlerotate', {
+                                delta: {
+                                    rotate: u.getAngle(rotateV1, rotateV2),
+                                },
+                                origin: ev,
+                            });
+                        }
                     }
-                }
-                function off(target, evName, fn) {
-                    if (RTOUCH_SUPPORT_EVENT.includes(evName) && target['RTouch']) {
-                        target['RTouch'].off(evName, fn);
-                    }
-                    else {
-                        target.interactive = true;
-                        target.off(evName, fn);
-                    }
-                }
-                var event = {
-                    /**
-                     * on
-                     *
-                     * event(s) binding
-                     *
-                     * @module query
-                     *
-                     * @param { String } name - event name
-                     * @param { Function } closure - event callback
-                     *
-                     * @example
-                     *
-                     * $(sprite).on('tap', () => {
-                     *     console.log('tapped')
-                     * })
-                     * // bind two events meanwhile
-                     * $(sprite).on('tap longtap', () => {
-                     *     console.log('tap longtap')
-                     * })
-                     */
-                    on: function (name, closure) {
-                        if (name === void 0) { name = ''; }
-                        if (closure === void 0) { closure = function () { }; }
-                        var events = name.split(' ');
-                        for (var i = 0; i < this.length; i++) {
-                            for (var j = 0; j < events.length; j++) {
-                                this[i].interactive = true;
-                                bind(this[i], events[j], closure);
+                    // 触发 drag
+                    this.eventStart('drag', {
+                        delta: {
+                            x: curPoint.x - this.startPoint.x,
+                            y: curPoint.y - this.startPoint.y,
+                        },
+                        origin: ev,
+                    });
+                    this.fireEvent('touchmove', {
+                        origin: ev,
+                    });
+                    this.startPoint = curPoint;
+                };
+                RTouch.prototype._end = function (ev) {
+                    var _this = this;
+                    var evArr = ['pinch', 'drag', 'rotate', 'singlerotate', 'singlepinch'];
+                    this.touching = false;
+                    this.fingers = u.getFingers(ev);
+                    evArr.map(function (evName) {
+                        _this.eventEnd(evName, {
+                            origin: ev,
+                            type: evName,
+                        });
+                    });
+                    if (this.swipeStartPoint) {
+                        var endPoint = {
+                            x: Math.round(ev.data.global.x),
+                            y: Math.round(ev.data.global.y),
+                        };
+                        var deltaX = endPoint.x - this.swipeStartPoint.x;
+                        var deltaY = endPoint.y - this.swipeStartPoint.y;
+                        var endTime = Date.now();
+                        var eventType = '';
+                        if (deltaX > 30 && Math.abs(deltaY) < 100) {
+                            // 右划
+                            eventType = 'swiperight';
+                        }
+                        else if (deltaX < -30 && Math.abs(deltaY) < 100) {
+                            // 左划
+                            eventType = 'swipeleft';
+                        }
+                        else if (deltaY > 30 && Math.abs(deltaX) < 100) {
+                            // 下划
+                            eventType = 'swipedown';
+                        }
+                        else if (deltaY < -30 && Math.abs(deltaX) < 100) {
+                            // 上划
+                            eventType = 'swipeup';
+                        }
+                        else if (Math.abs(deltaX) < 30 && Math.abs(deltaY) < 30) {
+                            if (endTime - this.startTime < 500) {
+                                // 触发短点击
+                                eventType = 'shorttap';
                             }
                         }
-                        return this;
-                    },
-                    /**
-                     * off
-                     *
-                     * event(s) unbinding
-                     *
-                     * @module query
-                     *
-                     * @param { String } name - event(s) name
-                     *
-                     * @example
-                     *
-                     * $(sprite).on('tap')
-                     * // unbind two events meanwhile
-                     * $(sprite).on('tap longtap')
-                     */
-                    off: function (name) {
-                        if (name === void 0) { name = ''; }
-                        var events = name.split(' ');
-                        for (var i = 0; i < this.length; i++) {
-                            for (var j = 0; j < events.length; j++) {
-                                this[i].off(events[j]);
-                                off(this[i], events[j]);
-                            }
+                        if (eventType) {
+                            this.fireEvent(eventType, {
+                                origin: ev,
+                            });
                         }
-                        return this;
+                    }
+                    this.fireEvent('touchend', {
+                        origin: ev,
+                    });
+                    if (this.longtapTimer)
+                        clearTimeout(this.longtapTimer);
+                };
+                RTouch.prototype.fireEvent = function (evName, ev) {
+                    if (this.Bus[evName]) {
+                        this.Bus[evName].fire(Object.assign(ev, {
+                            type: evName,
+                            stopPropagation: function () {
+                                ev.origin.stopPropagation();
+                            },
+                        }), this.target);
                     }
                 };
-                // @ts-ignore
-                if (window.query)
-                    window.query.extend(event);
+                RTouch.prototype.destory = function () {
+                    var _this = this;
+                    ORIGIN_EVENT_MAP.map(function (_a) {
+                        var name = _a.name, fn = _a.fn;
+                        _this.target.off(name, _this[fn], _this);
+                    });
+                };
+                RTouch.prototype.eventStart = function (evName, ev) {
+                    var ing = evName + "ing";
+                    var start = evName + "start";
+                    if (!this[ing]) {
+                        this.fireEvent(start, ev);
+                        this[ing] = true;
+                    }
+                    else {
+                        this.fireEvent(evName, ev);
+                    }
+                };
+                RTouch.prototype.eventEnd = function (evName, ev) {
+                    var ing = evName + "ing";
+                    var end = evName + "end";
+                    if (this[ing]) {
+                        ev.type = end;
+                        this.fireEvent(end, ev);
+                        this[ing] = false;
+                    }
+                };
+                RTouch.prototype.on = function (evName, handler) {
+                    var _this = this;
+                    var _evName = evName.trim().toLowerCase();
+                    _evName.split(' ').map(function (name) {
+                        _this.Bus[name].add(handler);
+                    });
+                    return this;
+                };
+                RTouch.prototype.off = function (evName, handler) {
+                    var _this = this;
+                    var _evName = evName.trim().toLowerCase();
+                    _evName.split(' ').map(function (name) {
+                        handler ? _this.Bus[name].del(handler) : _this.Bus[name].clear();
+                    });
+                    return this;
+                };
+                return RTouch;
+            }());
 
-                exports.default = event;
-                exports.event = event;
-
-                Object.defineProperty(exports, '__esModule', { value: true });
-
-            }));
-            //# sourceMappingURL=query-event.js.map
-            });
-
-            var queryEvent$1 = unwrapExports(queryEvent);
+            function on(target, evName, fn) {
+                if (RTOUCH_SUPPORT_EVENT.includes(evName)) {
+                    if (!target['RTouch'])
+                        target['RTouch'] = new RTouch(target);
+                    target['RTouch'].on(evName, fn);
+                }
+                else {
+                    target.interactive = true;
+                    target.on(evName, fn);
+                }
+                return target;
+            }
+            function off(target, evName, fn) {
+                if (RTOUCH_SUPPORT_EVENT.includes(evName) && target['RTouch']) {
+                    target['RTouch'].off(evName, fn);
+                }
+                else {
+                    target.interactive = true;
+                    target.off(evName, fn);
+                }
+                return target;
+            }
+            var queryEvent = {
+                on: function (name, closure) {
+                    if (name === void 0) { name = ''; }
+                    if (closure === void 0) { closure = function () { }; }
+                    var events = name.split(' ');
+                    for (var i = 0; i < this.length; i++) {
+                        for (var j = 0; j < events.length; j++) {
+                            this[i].interactive = true;
+                            on(this[i], events[j], closure);
+                        }
+                    }
+                    return this;
+                },
+                off: function (name) {
+                    if (name === void 0) { name = ''; }
+                    var events = name.split(' ');
+                    for (var i = 0; i < this.length; i++) {
+                        for (var j = 0; j < events.length; j++) {
+                            this[i].off(events[j]);
+                            off(this[i], events[j]);
+                        }
+                    }
+                    return this;
+                },
+            };
+            //# sourceMappingURL=query-event.es.js.map
 
             var query = function (stage) { return window.$ = createQuery(stage, query); };
             query.use = use;
             query.extend = extend;
             query.extend([
-                queryEvent$1,
+                queryEvent,
                 instance,
             ]);
             //# sourceMappingURL=index.js.map
@@ -41236,7 +41432,10 @@
             // container.addChild(t1)
             container$1.addChild(t2);
             game.stage.addChild(container$1);
-            console.log($('.aaaa'));
+            $('.aaaa').on('longtap', function () {
+                console.log(111, this);
+            });
+            //# sourceMappingURL=index.js.map
 
 }));
 //# sourceMappingURL=example.js.map

@@ -33,4 +33,6 @@ t2.y = 300
 container.addChild(t2)
 game.stage.addChild(container)
 
-console.log($('.aaaa'))
+$('.aaaa').on('longtap', function(this: any) {
+    console.log(111, this)
+})
